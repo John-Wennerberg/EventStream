@@ -116,19 +116,13 @@
 	</div>
 </body>
 
-<footer>
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				<DarkPaginationNav
-					totalItems={items.length}
-					{pageSize}
-					{currentPage}
-					limit={1}
-					showStepOptions={true}
-					on:setPage={(e) => (currentPage = e.detail.page)}
-				/>
-			</div>
-		</div>
-	</div>
+<footer id="footer">
+	<DarkPaginationNav
+						totalItems={items.length}
+						{pageSize}
+						{currentPage}
+						limit={1}
+						showStepOptions={true}
+						on:setPage={(e) => (currentPage = e.detail.page)}
+					/>
 </footer>

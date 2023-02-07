@@ -1,56 +1,81 @@
 <script>
 	import { accounts } from './data.js';
+	import { Router, Link, Route } from 'svelte-routing';
+	import CreateAccount from './create-account.svelte';
+
+
+
+	let username = ""
+	let password = ""
+
 
 	var isLoggedIn = false;
 	document.addEventListener('DOMContentLoaded', function () {
 		const accountInformation = document.querySelectorAll('input');
 		const button = document.querySelector('button');
 
+
 		button.addEventListener('click', function (event) {
-      debugger
+			debugger;
 			event.preventDefault();
-			accounts.forEach(function(account){
-        if(account.username == accountInformation[0].innerText){
-          if(account.password == accountInformation[1].innerText){
-            isLoggedIn = true;
-          } else{
-            //TODO
-          }
-        }
-      })
+			accounts.forEach(function (account) {
+				if (account.username == accountInformation[0].innerText) {
+					if (account.password == accountInformation[1].innerText) {
+						isLoggedIn = true;
+					} else {
+						//TODO
+					}
+				}
+			});
 		});
 	});
 </script>
 
 <body>
-	<div class="row row-cols-1">
-		<div class="row row-cols-2">
-			<div class="col">
-				<h1 class="headline headline-align-left">Cool Event Page</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm">
+				<h1 id="text-color">Login</h1>
 			</div>
 		</div>
-		<div class="col">
-			<hr class="header-underline" />
-		</div>
-		<div class="row row-cols-2">
-			<form class="center-aligned">
-				<div>
-					<input class="margin-top" type="text" placeholder="Username:" name="username" />
-				</div>
-				<div>
-					<input class="margin-top" type="password" placeholder="Password:" name="password" />
-				</div>
-				<div>
-					<button class="button-std login-button margin-top" type="submit">Login</button>
-				</div>
-			</form>
-		</div>
-		<div>
-			{#if isLoggedIn}
-				<p class="headline">Your are logged in</p>
-			{:else}
-				<p class="headline">You are not logged in</p>
-			{/if}
+		<div class="row">
+			<div class="col">
+				<hr id="header-underline" />
+			</div>
 		</div>
 	</div>
+	<div class="container" id="pad-top-10">
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<input type="text" placeholder="Username:" name="username" value={username} />
+			</div>
+		</div>
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<input type="password" placeholder="Password:" name="password" value={password}/>
+			</div>
+		</div>
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<form method="GET">
+					<input class="btn btn-primary" id="login-button" type="submit" value="Login" />
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="container" id="pad-top-2">
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto" id="text-color">Don't have an account?</div>
+		</div>
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<Router>
+					<Link to="/create-account">Sign up here</Link>
+				</Router>
+			</div>
+		</div>
+	</div>
+	<main>
+		<Route path="/create-account" component={CreateAccount} />
+	</main>
 </body>

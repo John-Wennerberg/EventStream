@@ -8,7 +8,7 @@
 	import PassedEvents from './lib/passed-events.svelte';
 	import Start from './lib/start.svelte';	
 
-	const isLoggedIn = true;
+	const isLoggedIn = false;
 </script>
 
 <head>
@@ -63,7 +63,8 @@
 			<Route path="/create-event" component={CreateEvent} />
 			<Route path="/my-events" component={MyEvents} />
 			<Route path="/my-account" component={MyAccount} />
-			<Route path="/create-accpunt" component={CreateAccount} />
+			<Route path="/create-account" component={CreateAccount} />
 		</main>
 	</Router>
 </body>
+

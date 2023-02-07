@@ -19,7 +19,6 @@
   clear: both;
   border: 3px solid #99DDDD;
   max-width: 95%;
-
 }
 
 body {
@@ -36,6 +35,16 @@ body {
   text-decoration: none;
 }
 
+#login-button {
+  background-color: #63696c;
+  color: #99DDDD;
+  border:none;
+  max-width: 125%;
+}
+#login-button:hover{
+  background-color :#292b2c;
+}
+
 .button-std{
   background-color: #63696c;
   color: #99DDDD;
@@ -44,10 +53,6 @@ body {
 
 .button:hover{
   background-color: #292b2c;
-}
-
-.login-button {
-  width: 25%;
 }
 
 #swap-button-active {
@@ -89,4 +94,24 @@ button.margin-top{
 
 #test-border{
   border: 6px solid red;
+}
+
+#footer{
+  position: sticky;
+  width: 100%;
+  bottom: 0;
+  background-color: #63696c;
+  color: #63696c;
+}
+
+#pad-top-10{
+  margin-top: 10%;
+}
+
+#pad-top-1{
+  margin-top: 1%
+}
+
+#pad-top-2{
+  margin-top: 2%;
 }
