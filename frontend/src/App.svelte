@@ -8,7 +8,7 @@
 	import PassedEvents from './lib/passed-events.svelte';
 	import Start from './lib/start.svelte';	
 
-	const isLoggedIn = false;
+	const isLoggedIn = true;
 </script>
 
 <head>

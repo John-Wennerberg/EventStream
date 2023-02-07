@@ -52,14 +52,14 @@
 	<div class="row row-cols-1">
 		<div class="row row-cols-2" />
 		<div class="col">
-			<h1 class="headline headline-align-left">Cool Event Page!</h1>
+			<h1 class="text-color headline-align-left">Cool Event Page!</h1>
 		</div>
 	</div>
 	<div class="col">
 		<hr class="header-underline" />
 	</div>
 	<div class="col">
-		<p class="headline body-align-left">Active Events</p>
+		<p class="text-color body-align-left">Active Events</p>
 	</div>
 	<div class="center-aligned">
 		<button id="swap-button-active">Active Events</button>
