@@ -15,11 +15,11 @@
   width: 80%;
 }
 
-.event-underline {
+#event-underline {
   clear: both;
   border: 3px solid #99DDDD;
-  width: 50%;
-  margin-left: 25%;
+  max-width: 95%;
+
 }
 
 body {
@@ -31,7 +31,7 @@ body {
   height: auto;
 }
 
-.undo-link {
+#undo-link {
   color: #99DDDD;
   text-decoration: none;
 }
@@ -85,4 +85,8 @@ button.margin-top{
 
 #text-color{
   color: #99DDDD;
+}
+
+#test-border{
+  border: 6px solid red;
 }

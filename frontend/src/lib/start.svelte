@@ -49,54 +49,86 @@
 <head />
 
 <body>
-	<div class="row row-cols-1">
-		<div class="row row-cols-2" />
-		<div class="col">
-			<h1 class="text-color headline-align-left">Cool Event Page!</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm">
+				<h1 id="text-color">Cool Event Page!</h1>
+			</div>
 		</div>
-	</div>
-	<div class="col">
-		<hr class="header-underline" />
-	</div>
-	<div class="col">
-		<p class="text-color body-align-left">Active Events</p>
-	</div>
-	<div class="center-aligned">
-		<button id="swap-button-active">Active Events</button>
-		<button id="swap-button-inactive">Passed Events</button>
-	</div>
-	<div>
-		<div class="container text-center">
-			<div class="row row-cols-3">
-				{#each paginatedItems as event}
-					{#if event.eventDate > formattedDate && showCurrentEvents}
-						<div>
-							<a class="undo-link" href="/event/{event.id}">
-								<img src="event-image.jpg" alt="Event" width="150" height="150" />
-								<br />
-								{event.eventTitle}
-								<hr class="event-underline" />
-							</a>
-						</div>
-					{:else if event.eventDate < formattedDate && !showCurrentEvents}
-						<div>
-							<a class="undo-link" href="/event/{event.id}">
-								<img src="event-image.jpg" alt="Event" width="150" height="150" />
-								<br />
-								{event.eventTitle}
-							</a>
-							<hr class="event-underline" />
-						</div>
-					{/if}
-				{/each}
+		<div class="row">
+			<div class="col-sm">
+				<hr id="header-underline" />
 			</div>
 		</div>
 	</div>
-	<DarkPaginationNav
-		totalItems={items.length}
-		{pageSize}
-		{currentPage}
-		limit={1}
-		showStepOptions={true}
-		on:setPage={(e) => (currentPage = e.detail.page)}/>
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<button id="swap-button-active">Active Events</button>
+			</div>
+			<div class="col-md-auto">
+				<button id="swap-button-inactive">Passed Events</button>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row row-cols-3 justify-content-md-center">
+			{#each paginatedItems as event}
+				{#if event.eventDate > formattedDate && showCurrentEvents}
+					<div class="container">
+						<div class="row justify-content-md-center">
+							<div class="col">
+								<a href="/event/{event.id}">
+									<div class="row justify-content-md-center">
+										<img src="event-image.jpg" alt="Event" />
+									</div>
+									<div class="row justify-content-md-center" id="undo-link">
+										{event.eventTitle}
+									</div>
+									<div class="row justify-content-md-center">
+										<hr id="event-underline" />
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				{:else if event.eventDate < formattedDate && !showCurrentEvents}
+					<div class="container">
+						<div class="row justify-content-md-center">
+							<div class="col">
+								<a href="/event/{event.id}">
+									<div class="row justify-content-md-center">
+										<img src="event-image.jpg" alt="Event" />
+									</div>
+									<div class="row justify-content-md-center" id="undo-link">
+										{event.eventTitle}
+									</div>
+									<div class="row justify-content-md-center">
+										<hr id="event-underline" />
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				{/if}
+			{/each}
+		</div>
+	</div>
 </body>
+
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<DarkPaginationNav
+					totalItems={items.length}
+					{pageSize}
+					{currentPage}
+					limit={1}
+					showStepOptions={true}
+					on:setPage={(e) => (currentPage = e.detail.page)}
+				/>
+			</div>
+		</div>
+	</div>
+</footer>
