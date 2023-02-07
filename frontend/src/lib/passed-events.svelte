@@ -14,7 +14,7 @@
 	<div class="row row-cols-1">
 		<div class="row row-cols-2">
 			<div class="col" id="text-align-left">
-				<h1 id="left-align">Passed events</h1>
+				<h1 id="left-align">Passed Events</h1>
 			</div>
 		</div>
 		<div class="col">

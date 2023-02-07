@@ -12,3 +12,8 @@ export const events = [
   { id: 11, "eventTitle": "Festival 6", "eventDate": "2023-02-20", "eventSalesDate": "2023-01-25", "eventOrganizer": "John", "eventTicketLimit": 4 },
   { id: 12, "eventTitle": "Concert 6", "eventDate": "2023-02-20", "eventSalesDate": "2023-01-25", "eventOrganizer": "John", "eventTicketLimit": 4 }
 ]
+
+export const accounts = [
+  { id: 1, "username":"John", "password":"123456", "email":"john.johnsson@john.com"},
+  { id: 2, "username":"Test", "password":"testsson", "email":"test@testsson.com"}
+]
