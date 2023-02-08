@@ -6,7 +6,7 @@
 
 <head />
 
-<body>
+<div>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm">
@@ -53,4 +53,4 @@
 			</div>
 		</div>
 	</div>
-</body>
+</div>

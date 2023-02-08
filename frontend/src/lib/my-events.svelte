@@ -1,44 +1,57 @@
 <script>
 	import { events } from './data.js';
 	import { Router, Link, Route } from 'svelte-routing';
+	import { paginate, DarkPaginationNav } from 'svelte-paginate';
 	import Event from './event.svelte';
 
-  const myAccount = "John"
+	let currentPage = 1;
+	let pageSize = 9;
+	let items = events;
+
+	$: paginatedItems = paginate({ items, pageSize, currentPage });
+
+	const myAccount = 'John';
 	let currentDate = new Date();
 	let currentYear = currentDate.toLocaleString('default', { year: 'numeric' });
 	let currentMonth = currentDate.toLocaleString('default', { month: '2-digit' });
 	let currentDay = currentDate.toLocaleString('default', { day: '2-digit' });
 	var formattedDate = currentYear + '-' + currentMonth + '-' + currentDay;
 
-  var showCurrentEvents = true
+	var showCurrentEvents = true;
 
-	function swapEventButtonValue(swapEventButton, headline) {
-		if (swapEventButton.innerText == 'Passed Events') {
-			swapEventButton.innerText = 'Active Events'
-      headline.innerText = 'My Passed Events'
-      showCurrentEvents = false
-		} else if( swapEventButton.innerText == 'Active Events'){
-      swapEventButton.innerText = 'Passed Events'
-      headline.innerText = 'My Current Events'
-      showCurrentEvents = true
-    }
+	function swapActiveButton(swapEventButtons, indexToActivate) {
+		for (let i = 0; i < swapEventButtons.length; i++) {
+			swapEventButtons[i].id = 'swap-button-inactive';
+		}
+		swapEventButtons[indexToActivate].id = 'swap-button-active';
+		if (showCurrentEvents) {
+			showCurrentEvents = false;
+		} else {
+			showCurrentEvents = true;
+		}
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {
-		const headline = document.querySelector('h1');
-		const swapEventButton = document.querySelector('button');
+		const swapEventButtons = document.querySelectorAll('button');
 
-		swapEventButton.addEventListener('click', function (event) {
+		swapEventButtons[0].addEventListener('click', function (event) {
 			event.preventDefault();
-
-			swapEventButtonValue(swapEventButton, headline);
+			if (swapEventButtons[0].id == 'swap-button-inactive') {
+				swapActiveButton(swapEventButtons, 0);
+			}
+		});
+		swapEventButtons[1].addEventListener('click', function (event) {
+			if (swapEventButtons[1].id == 'swap-button-inactive') {
+				event.preventDefault;
+				swapActiveButton(swapEventButtons, 1);
+			}
 		});
 	});
 </script>
 
 <head />
 
-<body>
+<div>
 	<div class="container">
 		<div class="row">
 			<div class="col">
@@ -47,52 +60,74 @@
 		</div>
 		<div class="row">
 			<div class="col">
-				<hr id="header-underline">
+				<hr id="header-underline" />
 			</div>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row justify-content-md-center">
 			<div class="col-md-auto">
-				{#each events as event}
-					{#if showCurrentEvents}
-						{#if event.eventDate > formattedDate && event.eventOrganizer == myAccount}
-							<Router>
-								<Link to="/event">{event.eventTitle}</Link>
-							</Router>
-						{/if}
-					{:else if !showCurrentEvents}
+				<button id="swap-button-active">Active Events</button>
+			</div>
+			<div class="col-md-auto">
+				<button id="swap-button-inactive">Passed Events</button>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row row-cols-3 justify-content-md-center">
+			<Router>
+				{#each paginatedItems as event}
+					{#if event.eventDate > formattedDate && event.eventOrganizer == myAccount && showCurrentEvents}
+						<div class="container">
+							<div class="row justify-content-md-center">
+								<div class="col">
+									<Link to="/event/{event.id}">
+										<div class="row justify-content-md-center">
+											<img src="event-image.jpg" alt="Event" />
+										</div>
+										<div class="row justify-content-md-center" id="undo-link">
+											{event.eventTitle}
+										</div>
+										<div class="row justify-content-md-center">
+											<hr id="event-underline" />
+										</div>
+									</Link>
+								</div>
+							</div>
+						</div>
+					{:else if event.eventDate < formattedDate && event.eventOrganizer == myAccount && !showCurrentEvents}
+						<div class="container">
+							<div class="row justify-content-md-center">
+								<div class="col">
+									<Link to="/event/{event.id}">
+										<div class="row justify-content-md-center">
+											<img src="event-image.jpg" alt="Event" />
+										</div>
+										<div class="row justify-content-md-center" id="undo-link">
+											{event.eventTitle}
+										</div>
+										<div class="row justify-content-md-center">
+											<hr id="event-underline" />
+										</div>
+									</Link>
+								</div>
+							</div>
+						</div>
 					{/if}
 				{/each}
-			</div>
+			</Router>
 		</div>
 	</div>
-	<div class="row row-cols-1">
-		<div class="col" id="text-align-left">
-			<h1 id="left-align">My Active Events</h1>
-		</div>
-		<div class="col">
-			<button>Passed Events</button>
-		</div>
-		<div class="col">
-			<hr class="header-underline" />
-		</div>
-		<div>
-			<div class="container text-center">
-				<div class="row row-cols-3">
-					{#each events as event}
-            {#if showCurrentEvents}
-						  {#if event.eventDate > formattedDate && event.eventOrganizer == myAccount}
-							  <a href="/event/{event.id}">{event.eventTitle}</a>
-						  {/if}
-            {:else if !showCurrentEvents}
-              {#if event.eventDate < formattedDate && event.eventOrganizer == myAccount}
-                <a href="event/{event.id}">{event.eventTitle}</a>
-              {/if}
-            {/if}
-					{/each}
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
+</div>
+
+<footer id="footer">
+	<DarkPaginationNav
+		totalItems={items.length}
+		{pageSize}
+		{currentPage}
+		limit={1}
+		showStepOptions={true}
+		on:setPage={(e) => (currentPage = e.detail.page)}
+	/>
+</footer>

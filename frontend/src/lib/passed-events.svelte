@@ -10,7 +10,7 @@
 
 <head />
 
-<body>
+<div>
 	<div class="row row-cols-1">
 		<div class="row row-cols-2">
 			<div class="col" id="text-align-left">
@@ -32,4 +32,4 @@
 			</div>
 		</div>
 	</div>
-</body>
+</div>

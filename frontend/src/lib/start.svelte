@@ -1,4 +1,5 @@
 <script>
+	import { Router, Link, Route } from 'svelte-routing';
 	import { events } from './data.js';
 	import { paginate, DarkPaginationNav } from 'svelte-paginate';
 
@@ -48,7 +49,7 @@
 
 <head />
 
-<body>
+<div>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm">
@@ -74,55 +75,57 @@
 	<div class="container">
 		<div class="row row-cols-3 justify-content-md-center">
 			{#each paginatedItems as event}
-				{#if event.eventDate > formattedDate && showCurrentEvents}
-					<div class="container">
-						<div class="row justify-content-md-center">
-							<div class="col">
-								<a href="/event/{event.id}">
-									<div class="row justify-content-md-center">
-										<img src="event-image.jpg" alt="Event" />
-									</div>
-									<div class="row justify-content-md-center" id="undo-link">
-										{event.eventTitle}
-									</div>
-									<div class="row justify-content-md-center">
-										<hr id="event-underline" />
-									</div>
-								</a>
+				<Router>
+					{#if event.eventDate > formattedDate && showCurrentEvents}
+						<div class="container">
+							<div class="row justify-content-md-center">
+								<div class="col">
+									<Link to="/event/{event.id}">
+										<div class="row justify-content-md-center">
+											<img src="event-image.jpg" alt="Event" />
+										</div>
+										<div class="row justify-content-md-center" id="undo-link">
+											{event.eventTitle}
+										</div>
+										<div class="row justify-content-md-center">
+											<hr id="event-underline" />
+										</div>
+									</Link>
+								</div>
 							</div>
 						</div>
-					</div>
-				{:else if event.eventDate < formattedDate && !showCurrentEvents}
-					<div class="container">
-						<div class="row justify-content-md-center">
-							<div class="col">
-								<a href="/event/{event.id}">
-									<div class="row justify-content-md-center">
-										<img src="event-image.jpg" alt="Event" />
-									</div>
-									<div class="row justify-content-md-center" id="undo-link">
-										{event.eventTitle}
-									</div>
-									<div class="row justify-content-md-center">
-										<hr id="event-underline" />
-									</div>
-								</a>
+					{:else if event.eventDate < formattedDate && !showCurrentEvents}
+						<div class="container">
+							<div class="row justify-content-md-center">
+								<div class="col">
+									<Link to="/event/{event.id}">
+										<div class="row justify-content-md-center">
+											<img src="event-image.jpg" alt="Event" />
+										</div>
+										<div class="row justify-content-md-center" id="undo-link">
+											{event.eventTitle}
+										</div>
+										<div class="row justify-content-md-center">
+											<hr id="event-underline" />
+										</div>
+									</Link>
+								</div>
 							</div>
 						</div>
-					</div>
-				{/if}
+					{/if}
+				</Router>
 			{/each}
 		</div>
 	</div>
-</body>
+</div>
 
 <footer id="footer">
 	<DarkPaginationNav
-						totalItems={items.length}
-						{pageSize}
-						{currentPage}
-						limit={1}
-						showStepOptions={true}
-						on:setPage={(e) => (currentPage = e.detail.page)}
-					/>
+		totalItems={items.length}
+		{pageSize}
+		{currentPage}
+		limit={1}
+		showStepOptions={true}
+		on:setPage={(e) => (currentPage = e.detail.page)}
+	/>
 </footer>

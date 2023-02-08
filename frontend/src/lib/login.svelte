@@ -1,7 +1,7 @@
 <script>
 	import { accounts } from './data.js';
 	import { Router, Link, Route } from 'svelte-routing';
-	import CreateAccount from './create-account.svelte';
+
 
 
 
@@ -31,7 +31,7 @@
 	});
 </script>
 
-<body>
+<div>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm">
@@ -75,7 +75,4 @@
 			</div>
 		</div>
 	</div>
-	<main>
-		<Route path="/create-account" component={CreateAccount} />
-	</main>
-</body>
+</div>

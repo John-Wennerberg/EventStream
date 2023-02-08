@@ -7,6 +7,7 @@
 	import MyEvents from './lib/my-events.svelte';
 	import PassedEvents from './lib/passed-events.svelte';
 	import Start from './lib/start.svelte';	
+	import Event from './lib/event.svelte'
 
 	const isLoggedIn = true;
 </script>
@@ -64,6 +65,7 @@
 			<Route path="/my-events" component={MyEvents} />
 			<Route path="/my-account" component={MyAccount} />
 			<Route path="/create-account" component={CreateAccount} />
+			<Route path="/event/:id" component={Event} />
 		</main>
 	</Router>
 </body>
