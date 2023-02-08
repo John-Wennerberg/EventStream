@@ -1,5 +1,7 @@
 <script>
 	import { events } from './data.js';
+	import { Router, Link, Route } from 'svelte-routing';
+	import Event from './event.svelte';
 
   const myAccount = "John"
 	let currentDate = new Date();
@@ -37,6 +39,34 @@
 <head />
 
 <body>
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<h1 id="text-color">My Events</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<hr id="header-underline">
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				{#each events as event}
+					{#if showCurrentEvents}
+						{#if event.eventDate > formattedDate && event.eventOrganizer == myAccount}
+							<Router>
+								<Link to="/event">{event.eventTitle}</Link>
+							</Router>
+						{/if}
+					{:else if !showCurrentEvents}
+					{/if}
+				{/each}
+			</div>
+		</div>
+	</div>
 	<div class="row row-cols-1">
 		<div class="col" id="text-align-left">
 			<h1 id="left-align">My Active Events</h1>

@@ -1,16 +1,47 @@
 <script>
-    import { accounts } from './data.js'
+	import { accounts } from './data.js';
 
-    const myUsername = "John"
-
+	const myUsername = 'John';
 </script>
 
-<head>
-
-</head>
+<head />
 
 <body>
-  <div class="row row-cols-1">
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<h1 id="text-color">My Account</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<hr id="header-underline" />
+			</div>
+		</div>
+	</div>
+	<div class="container" id="pad-top-10">
+		<div class="row justify-content-md-center" id="text-color">
+			<div class="col-lg-1">Username:</div>
+			<div class="col-lg-2">
+				{#each accounts as account}
+					{#if account.username == myUsername}
+						{account.username}
+					{/if}
+				{/each}
+			</div>
+		</div>
+		<div class="row justify-content-md-center" id="text-color">
+			<div class="col-lg-1">Email:</div>
+			<div class="col-lg-2">
+				{#each accounts as account}
+					{#if account.username == myUsername}
+						{account.email}
+					{/if}
+				{/each}
+			</div>
+		</div>
+	</div>
+	<div class="row row-cols-1">
 		<div class="col" id="text-align-left">
 			<h1 id="left-align">My Account</h1>
 		</div>
@@ -18,12 +49,12 @@
 			<hr class="header-underline" />
 		</div>
 		<div class="col" id="text-align-left">
-      {#each accounts as account}
-        {#if account.username == myUsername}
-          <p>Username: {account.username}</p>
-          <p>Email: {account.email}</p>
-        {/if}
-      {/each}
+			{#each accounts as account}
+				{#if account.username == myUsername}
+					<p>Username: {account.username}</p>
+					<p>Email: {account.email}</p>
+				{/if}
+			{/each}
 		</div>
 	</div>
 </body>
