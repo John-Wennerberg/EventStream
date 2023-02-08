@@ -82,7 +82,7 @@
 						<div class="container">
 							<div class="row justify-content-md-center">
 								<div class="col">
-									<Link to="/event/id={event.id}">
+									<Link to="/event/{event.id}">
 										<div class="row justify-content-md-center">
 											<img src="event-image.jpg" alt="Event" />
 										</div>
