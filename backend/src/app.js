@@ -1,36 +1,39 @@
-const express = require('express')
-const mariadb = require('mariadb')
+import express from 'express'
+import {createPool} from 'mariadb'
 
+const pool = createPool({
+  host: "db",
+  port: 3306,
+  user: "root",
+  password: "abc123",
+  database: "abc",
+})
+
+pool.on('error', function(error){
+  console.log("Error from pool", error)
+})
 
 const app = express()
 
-async function asyncFunction(resquest, response){
-  const conn = mariadb.createConnection({
-    host: "localhost",
-    port: 5555,
-    user: "root",
-    password: "abc123"
-  })
+app.get("/events", async function(request, response){
+  console.log("Hello?!")
 
-  app.get("/events", async function(request, respsonse){
-    try{
-      const query = `SELECT * FROM events`
+  try{
+    const connection = await pool.getConnection()
+    const query = "SELECT * FROM events"
 
-      const events = (await conn).query(query)
+    const events = await connection.query(query)
+    
+    response.status(200).json(events)
 
-      response.status(200).json(events)
-    } catch(error){
-      console.log(error)
-      response.status(500).end()
-    }
-  })
+  }catch(error){
+    console.log(error)
+    response.status(500).end()
+  }
+})
 
-}
-
-asyncFunction()
-
-
-
-
+app.get("/", function(request, response){
+  response.send("It works")
+})
 
 app.listen(8080)
