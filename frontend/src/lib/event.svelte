@@ -4,11 +4,11 @@
 
 
   let eventDescription = ""
-  events.forEach((item)=>{
+  /*events.forEach((item)=>{
     if(){
       eventDescription = item.eventDescription
     }
-  })
+  })*/
 </script>
 
 <div>
