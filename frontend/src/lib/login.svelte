@@ -1,32 +1,45 @@
 <script>
 	import { accounts } from './data.js';
 	import { Router, Link, Route } from 'svelte-routing';
+    import { prevent_default } from 'svelte/internal';
 
 
 
 
 	let username = ""
 	let password = ""
+	let error = ""
 
 
 	var isLoggedIn = false;
 	document.addEventListener('DOMContentLoaded', function () {
+		
 		const accountInformation = document.querySelectorAll('input');
 		const button = document.querySelector('button');
 
 
 		button.addEventListener('click', function (event) {
-			debugger;
+			
 			event.preventDefault();
-			accounts.forEach(function (account) {
-				if (account.username == accountInformation[0].innerText) {
-					if (account.password == accountInformation[1].innerText) {
+			error = ""
+			console.log(accounts)
+			let found=false
+			accounts.forEach(function (account) { 
+				console.log(account)
+					if (account.username == accountInformation[0].value && account.password == accountInformation[1].value && found == false) {
 						isLoggedIn = true;
-					} else {
-						//TODO
-					}
-				}
+						found = true;
+						console.log("login success")
+
+					} 
 			});
+			if (found==false) {
+				console.log(accountInformation[0].value)
+				console.log("EROROOROROROROOROROR")
+				error = "Wrong username or password"
+			}
+
+
 		});
 	});
 </script>
@@ -58,7 +71,7 @@
 		<div class="row justify-content-md-center">
 			<div class="col-md-auto">
 				<form method="GET">
-					<input class="btn btn-primary" id="login-button" type="submit" value="Login" />
+					<button class="btn btn-primary" id="login-button" type="submit" value="Login" >Login </button>
 				</form>
 			</div>
 		</div>
@@ -72,6 +85,13 @@
 				<Router>
 					<Link to="/create-account">Sign up here</Link>
 				</Router>
+			</div>
+			<div>
+				{#if error}
+					<div class="row justify-content-md-center">
+						<div class="col-md-auto" style="color: red;">{error}</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>

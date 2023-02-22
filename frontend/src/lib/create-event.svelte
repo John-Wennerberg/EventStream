@@ -45,6 +45,12 @@
 			</div>
 		</div>
 		<div class="row justify-content-md-center">
+			<div id="text-color" class="col col-lg-2">Upload Image:</div>
+			<div class="col col-lg-2">
+				<button>upload</button>
+			</div>
+		</div>
+		<div class="row justify-content-md-center">
 			<div class="col col-lg-2" />
 			<div class="col col-lg-2">
 				<form method="POST">
@@ -52,5 +58,6 @@
 				</form>
 			</div>
 		</div>
+
 	</div>
 </div>
