@@ -17,7 +17,11 @@ const app = express()
 
 app.get("/events", async function(request, response){
   console.log("Hello?!")
-
+/*
+app.get("login.svelte", function(request, response)) {
+  console.log("rööööööv")
+}
+*/
   try{
     const connection = await pool.getConnection()
     const query = "SELECT * FROM events"
@@ -36,4 +40,8 @@ app.get("/", function(request, response){
   response.send("It works")
 })
 
+
 app.listen(8080)
+
+
+

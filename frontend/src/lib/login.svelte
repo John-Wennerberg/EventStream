@@ -30,7 +30,7 @@
 						isLoggedIn = true;
 						found = true;
 						console.log("login success")
-
+						
 					} 
 			});
 			if (found==false) {
@@ -38,8 +38,6 @@
 				console.log("EROROOROROROROOROROR")
 				error = "Wrong username or password"
 			}
-
-
 		});
 	});
 </script>
