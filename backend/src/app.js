@@ -22,6 +22,11 @@ app.get("login.svelte", function(request, response)) {
   console.log("rööööööv")
 }
 */
+/*
+app.post('/upload', upload.single('file'), function(request, response) {
+  response.send('File uploaded Successfully!');
+});
+*/
   try{
     const connection = await pool.getConnection()
     const query = "SELECT * FROM events"

@@ -8,6 +8,7 @@
 	import PassedEvents from './lib/passed-events.svelte';
 	import Start from './lib/start.svelte';	
 	import Event from './lib/event.svelte'
+  import Upload from './lib/upload.svelte';
 
 	const isLoggedIn = true;
 </script>
@@ -66,6 +67,7 @@
 			<Route path="/my-account" component={MyAccount} />
 			<Route path="/create-account" component={CreateAccount} />
 			<Route path="/event/:id" let:params component={Event} />
+			<Route path="/upload" component = {Upload}/>
 		</main>
 	</Router>
 </body>

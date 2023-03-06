@@ -1,7 +1,6 @@
 <script>
 	import { DateInput } from 'date-picker-svelte';
-	//import {multer} from "multer";
-	//import {path} from 'path'
+	import axios, {isCancel, AxiosError} from 'axios';
 	let eventDate = new Date();
 	let eventSalesDate = new Date();
 	
@@ -10,7 +9,15 @@
     let dataFile = null;
 	var value = ""
 
-
+	/*
+	function handleCreateEvent(event){
+		event.preventDefault();
+		formData.append("image", image[0]);
+		formData.append("date", date); 
+		//EXEMPEL på hur upload to firebase men vi använder mariaDB. 
+	}
+*/
+/*
     function upload() {
         const formData = new FormData();
         formData.append('damName', value);
@@ -25,8 +32,18 @@
                     console.error('Error:', error);
                 });
     }
+	const imageStorage = multer.diskStorage({
+    // Destination to store image     
+    destination: 'uploadedimages', 
+      filename: (req, file, cb) => {
+          cb(null, file.fieldname + '_' + Date.now() 
+             + path.extname(file.originalname))
+            // file.fieldname is name of the field (image)
+            // path.extname get the uploaded file extension
+    }
+});
 
-
+*/
 
 </script>
 
@@ -73,19 +90,21 @@
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Upload Image:</div>
 			<div class="col col-lg-2">
-				<form action="" method="post" enctype="multipart/from-data">
-					<input id="fileUpload" type="file" bind:files>
-					{#if dataFile && files[0]}
+				<form action="/create-event" method="post" enctype="multipart/from-data">
+					<input type="file" name="image">
+					<input type="submit">
+					<!-- {#if dataFile && files[0]}
 						<p>
 							{files[0].name}
 						</p>
-					{/if}
+					{/if} -->
 				</form>
+<!-- 
 				{#if value}
 					<button on:click={upload}>Submit</button>
 				{:else}
 					<button on:click={upload} disabled>Submit</button>
-				{/if}
+				{/if} -->
 			</div>
 		</div>
 		<div class="row justify-content-md-center">
