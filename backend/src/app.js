@@ -1,5 +1,8 @@
 import express from 'express'
 import {createPool} from 'mariadb'
+import express from 'express'
+import multer from 'multer'
+import path from 'path'
 
 const pool = createPool({
   host: "db",
@@ -15,18 +18,37 @@ pool.on('error', function(error){
 
 const app = express()
 
+app.get("/index", function (request, response) {
+  response.send("upload")
+})
+
+
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'C:/Users/Alfre/OneDrive/Dokument/GitHub/webdevadv-project/frontend/public/Images')
+  },
+  filename: function (req, file, cb) {
+    console.log(file)
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({ storage: storage })
+
+app.post('/index', upload.single('eventImage'), function (req, res, next) {
+  // req.file is the `eventImage` file
+  // req.body will contain the text fields, if there were any
+  res.send('File uploaded Successfully!')
+})
+
+
+
+
+
 app.get("/events", async function(request, response){
   console.log("Hello?!")
-/*
-app.get("login.svelte", function(request, response)) {
-  console.log("rööööööv")
-}
-*/
-/*
-app.post('/upload', upload.single('file'), function(request, response) {
-  response.send('File uploaded Successfully!');
-});
-*/
   try{
     const connection = await pool.getConnection()
     const query = "SELECT * FROM events"
@@ -46,7 +68,9 @@ app.get("/", function(request, response){
 })
 
 
-app.listen(8080)
+app.listen(5173, () => {
+  console.log('Server started on port 5173')
+})
 
 
 
