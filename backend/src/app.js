@@ -19,6 +19,7 @@ pool.on('error', function(error){
 const app = express()
 
 app.get("/index", function (request, response) {
+  console.log("inne i get")
   response.send("upload")
 })
 
@@ -27,7 +28,7 @@ app.get("/index", function (request, response) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'C:/Users/Alfre/OneDrive/Dokument/GitHub/webdevadv-project/frontend/public/Images')
+    cb(null, './frontend/public/images')
   },
   filename: function (req, file, cb) {
     console.log(file)
@@ -40,12 +41,13 @@ const upload = multer({ storage: storage })
 app.post('/index', upload.single('eventImage'), function (req, res, next) {
   // req.file is the `eventImage` file
   // req.body will contain the text fields, if there were any
+  console.log("inne i post")
   res.send('File uploaded Successfully!')
 })
 
 
 
-
+/*
 
 app.get("/events", async function(request, response){
   console.log("Hello?!")
@@ -66,9 +68,9 @@ app.get("/events", async function(request, response){
 app.get("/", function(request, response){
   response.send("It works")
 })
+*/
 
-
-app.listen(5173, () => {
+app.listen(8080, () => {
   console.log('Server started on port 5173')
 })
 
