@@ -1,8 +1,8 @@
 import express from 'express'
 import {createPool} from 'mariadb'
-import express from 'express'
 import multer from 'multer'
 import path from 'path'
+import events from "./frontend/src/lib/data.js"
 
 const pool = createPool({
   host: "db",
@@ -12,18 +12,29 @@ const pool = createPool({
   database: "abc",
 })
 
+
+
 pool.on('error', function(error){
   console.log("Error from pool", error)
 })
 
 const app = express()
 
+app.use(function(request, response, next){
+	
+	response.set("Access-Control-Allow-Origin", "*")
+	response.set("Access-Control-Allow-Methods", "*")
+	response.set("Access-Control-Allow-Headers", "*")
+	response.set("Access-Control-Expose-Headers", "*")
+	
+	next()
+	
+})
+
 app.get("/index", function (request, response) {
   console.log("inne i get")
   response.send("upload")
 })
-
-
 
 
 const storage = multer.diskStorage({
@@ -47,7 +58,16 @@ app.post('/index', upload.single('eventImage'), function (req, res, next) {
 
 
 
-/*
+app.get("/events/:id", function(request,response){
+  const id = request.params.id
+  const event = events.find(e=> e.id == id)
+
+  if(event){
+    response.status(200).json(event)
+  }else{
+    response.status(404).end()
+  }
+})
 
 app.get("/events", async function(request, response){
   console.log("Hello?!")
@@ -68,11 +88,13 @@ app.get("/events", async function(request, response){
 app.get("/", function(request, response){
   response.send("It works")
 })
-*/
+
+
 
 app.listen(8080, () => {
-  console.log('Server started on port 5173')
+  console.log('Server started on port 8080')
 })
+
 
 
 

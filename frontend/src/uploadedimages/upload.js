@@ -1,3 +1,5 @@
+/*
+
 import multer from "multer"
 import path from "path"
 import { app } from "routing"
@@ -28,3 +30,5 @@ app.post("/index", upload.single("eventImage"), function (request, response) {
 
 
 app.listen(5173)
+
+*/
