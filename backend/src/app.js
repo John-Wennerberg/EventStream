@@ -33,7 +33,7 @@ app.get("/events", async function(request, response){
 })
 
 app.get("/", function(request, response){
-  response.send("It works")
+  response.render("./frontend/src/App.svelte")
 })
 
 app.listen(8080)
