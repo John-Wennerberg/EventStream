@@ -26,6 +26,7 @@
 					{#each events as event}
 						{#if event.eventDate < formattedDate}
 							<a href="/event/{event.id}">{event.eventTitle}</a>
+							<img src="http://localhost:8080/images/1" />
 						{/if}
 					{/each}
 				</div>

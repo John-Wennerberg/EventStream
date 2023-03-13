@@ -2,7 +2,7 @@ import express from 'express'
 import {createPool} from 'mariadb'
 import multer from 'multer'
 import path from 'path'
-import { events } from "/Users/alfred/Documents/GitHub/webdevadv-project/frontend/src/lib/data.js"
+//import { events } from "/webdevadv-project/frontend/src/lib/data.js"
 
 
 
@@ -37,7 +37,19 @@ app.get("/index", function (request, response) {
   console.log("inne i get")
   response.send("upload")
 })
-
+app.get('/images/:id', async function(req, res) {
+  const id = req.params.id;
+  const connection = await pool.getConnection();
+  const result = await connection.query('SELECT * FROM images WHERE id = ?', [id]);
+  connection.release();
+  if (result.length > 0) {
+    res.setHeader('Content-Type', 'image/png'); // replace 'png' with the actual image type
+    res.send(result[0].content);
+  } else {
+    res.status(404).send('Image not found');
+  }
+});
+/*
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -48,18 +60,65 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
+*/
 
-const upload = multer({ storage: storage })
+//const upload = multer({ storage: storage })
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
+app.post('/index', upload.single('eventImage'), async function (req, res, next) {
+  try {
+    const fileContent = req.file.buffer; // get the buffer containing the file contents
+
+    // insert the file contents into the database
+    await pool.query("INSERT INTO images (filename, content) VALUES (?, ?)", [
+      req.file.originalname,
+      fileContent
+    ]);
+
+    res.send('File uploaded successfully!');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error uploading file');
+  }
+});
+
+app.use(express.json())
+app.post('/create-event',upload.single('eventImage'), async function (request, response) {
+  const eventTitle = request.body.eventTitle
+  const eventDate = request.body.eventDate
+  const eventSalesDate = request.body.eventSalesDate
+  const eventTicketLimit = request.body.eventTicketLimit
+  const eventDescription = request.body.eventDescription
+  const eventOrganizer = request.body.eventOrganizer
+  const eventImage = request.file.buffer // Use buffer to get the file content
+
+
+  const connection = await pool.getConnection()
+
+  const [result] = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)', [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage])
+  if (result) {
+    response.status(200).json(result)
+  } else {
+    // handle the case where there is no result
+    response.status(500).send('Internal Server Error')
+  } 
+})
+
+
+/*
 app.post('/index', upload.single('eventImage'), function (req, res, next) {
   // req.file is the `eventImage` file
   // req.body will contain the text fields, if there were any
   console.log("inne i post")
   res.send('File uploaded Successfully!')
 })
+*/
 
 
-
+/*
 app.get("/events/:id", function(request,response){
   const id = request.params.id
   const event = events.find(e=> e.id == id)
@@ -70,6 +129,7 @@ app.get("/events/:id", function(request,response){
     response.status(404).end()
   }
 })
+*/
 
 app.get("/events", async function(request, response){
   console.log("Hello?!")

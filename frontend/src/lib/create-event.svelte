@@ -1,49 +1,42 @@
 <script>
 	import { DateInput } from 'date-picker-svelte';
-	import axios, {isCancel, AxiosError} from 'axios';
+
+
+	let eventTitle = '';
 	let eventDate = new Date();
 	let eventSalesDate = new Date();
-	
-	
-	let files;
-    let dataFile = null;
-	var value = ""
+	let eventTicketLimit = 0;
+	let eventDescription = '';
+	let eventOrganizer = '';
 
-	/*
-	function handleCreateEvent(event){
-		event.preventDefault();
-		formData.append("image", image[0]);
-		formData.append("date", date); 
-		//EXEMPEL på hur upload to firebase men vi använder mariaDB. 
+	async function handleFileUpload(event) {
+	event.preventDefault();
+			
+	const fileInput = event.target.querySelector('input[type="file"]');
+	const file = fileInput.files[0];
+	
+	const data = new FormData();
+	data.append('eventTitle', eventTitle);
+	data.append('eventDate', eventDate.toISOString().slice(0, 10));
+	data.append('eventSalesDate', eventSalesDate.toISOString().slice(0, 10));
+	data.append('eventTicketLimit', eventTicketLimit);
+	data.append('eventDescription', eventDescription);
+	data.append('eventOrganizer', eventOrganizer);
+	data.append('eventImage', file)
+
+	try {
+		const response = await fetch('http://localhost:8080/create-event', {
+		method: 'POST',
+		body: data
+		});
+		console.log(response);
+		console.log("Inne i den hära");
+	} catch (error) {
+		//console.error(error);
+		console.log("massa errors");
 	}
-*/
-/*
-    function upload() {
-        const formData = new FormData();
-        formData.append('damName', value);
-        formData.append('dataFile', files[0]);
-        const upload = fetch('http://localhost:5173/file', {
-            method: 'POST',
-            body: formData
-        }).then((response) => response.json()).then((result) => {
-            console.log('Success:', result);
-        })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-    }
-	const imageStorage = multer.diskStorage({
-    // Destination to store image     
-    destination: 'uploadedimages', 
-      filename: (req, file, cb) => {
-          cb(null, file.fieldname + '_' + Date.now() 
-             + path.extname(file.originalname))
-            // file.fieldname is name of the field (image)
-            // path.extname get the uploaded file extension
-    }
-});
+	}
 
-*/
 
 </script>
 
@@ -90,31 +83,11 @@
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Upload Image:</div>
 			<div class="col col-lg-2">
-				<form action="/create-event" method="post" enctype="multipart/from-data">
-					<input type="file" name="image">
-					<input type="submit">
-					<!-- {#if dataFile && files[0]}
-						<p>
-							{files[0].name}
-						</p>
-					{/if} -->
-				</form>
-<!-- 
-				{#if value}
-					<button on:click={upload}>Submit</button>
-				{:else}
-					<button on:click={upload} disabled>Submit</button>
-				{/if} -->
-			</div>
-		</div>
-		<div class="row justify-content-md-center">
-			<div class="col col-lg-2" />
-			<div class="col col-lg-2">
-				<form method="POST">
-					<input class="btn btn-primary" type="submit" value="create" />
+				<form on:submit|preventDefault={handleFileUpload} enctype="multipart/form-data">
+					<input type="file" name="eventImage">
+					<button type="submit">Upload</button>
 				</form>
 			</div>
 		</div>
-
 	</div>
 </div>
