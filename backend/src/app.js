@@ -15,8 +15,13 @@ pool.on('error', function(error){
 
 const app = express()
 
-app.get("/events", async function(request, response){
-  console.log("Hello?!")
+app.get("/", async function(request, response){
+  console.log("Received GET /")
+
+  response.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  )
 
   try{
     const connection = await pool.getConnection()
@@ -30,10 +35,6 @@ app.get("/events", async function(request, response){
     console.log(error)
     response.status(500).end()
   }
-})
-
-app.get("/", function(request, response){
-  response.send("It works")
 })
 
 app.listen(8080)
