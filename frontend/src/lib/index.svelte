@@ -11,7 +11,7 @@
         //formData.append('file', file);
         
         
-        data.append('file', file)
+        data.append('eventImage', file)
         try {
             const response = await fetch('http://localhost:8080/index', {
             method: 'POST',

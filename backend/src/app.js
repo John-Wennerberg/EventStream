@@ -2,7 +2,9 @@ import express from 'express'
 import {createPool} from 'mariadb'
 import multer from 'multer'
 import path from 'path'
-import events from "./frontend/src/lib/data.js"
+import { events } from "/Users/alfred/Documents/GitHub/webdevadv-project/frontend/src/lib/data.js"
+
+
 
 const pool = createPool({
   host: "db",
@@ -39,7 +41,7 @@ app.get("/index", function (request, response) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './frontend/public/images')
+    cb(null, '/Users/alfred/Documents/GitHub/webdevadv-project/frontend/public/images')
   },
   filename: function (req, file, cb) {
     console.log(file)
