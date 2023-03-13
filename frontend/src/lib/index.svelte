@@ -20,7 +20,7 @@
             console.log(response);
             console.log("Inne i den hära")
         } catch (error) {
-            console.error(error);
+            //console.error(error);
             console.log("massa errors")
         }
 	}
