@@ -32,6 +32,37 @@
 	document.addEventListener('DOMContentLoaded', function () {
 		const swapEventButtons = document.querySelectorAll('button');
 
+		fetch('http://localhost:8080')
+			.then((response) => response.json())
+			.then((data) => {
+				data.forEach((item) => {
+					const htmlSegment =
+						`<Router>
+							<div class="container">
+								<div class="row justify-content-md-center">
+									<div class="col">
+										<Link to="/event/${item.eventID}">
+											<div class="row justify-content-md-center">
+												<img src="event-image.jpg" alt="Event" />
+											</div>
+											<div class="row justify-content-md-center" id="undo-link">
+												${item.eventTitle}
+											</div>
+											<div class="row justify-content-md-center">
+												<hr id="event-underline" />
+											</div>
+										</Link>
+									</div>
+								</div>
+							</div>
+						</Router>`
+					if(item.eventDate > formattedDate && showCurrentEvents){
+						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
+					} else if(item.eventDate < formattedDate && !showCurrentEvents){
+						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
+					}
+				});
+			});
 		swapEventButtons[0].addEventListener('click', function (event) {
 			event.preventDefault();
 			if (swapEventButtons[0].id == 'swap-button-inactive') {
@@ -72,54 +103,15 @@
 			</div>
 		</div>
 	</div>
+
+	
 	<div class="container">
-		<div class="row row-cols-3 justify-content-md-center">
-			{#each paginatedItems as event}
-				<Router>
-					{#if event.eventDate > formattedDate && showCurrentEvents}
-						<div class="container">
-							<div class="row justify-content-md-center">
-								<div class="col">
-									<Link to="/event/{event.id}">
-										<div class="row justify-content-md-center">
-											<img src="event-image.jpg" alt="Event" />
-										</div>
-										<div class="row justify-content-md-center" id="undo-link">
-											{event.eventTitle}
-										</div>
-										<div class="row justify-content-md-center">
-											<hr id="event-underline" />
-										</div>
-									</Link>
-								</div>
-							</div>
-						</div>
-					{:else if event.eventDate < formattedDate && !showCurrentEvents}
-						<div class="container">
-							<div class="row justify-content-md-center">
-								<div class="col">
-									<Link to="/event/{event.id}">
-										<div class="row justify-content-md-center">
-											<img src="event-image.jpg" alt="Event" />
-										</div>
-										<div class="row justify-content-md-center" id="undo-link">
-											{event.eventTitle}
-										</div>
-										<div class="row justify-content-md-center">
-											<hr id="event-underline" />
-										</div>
-									</Link>
-								</div>
-							</div>
-						</div>
-					{/if}
-				</Router>
-			{/each}
+		<div class="row row-cols-3 justify-content-md-center" id="display-event">
 		</div>
 	</div>
 </div>
 
-<footer id="footer">
+<!--footer id="footer">
 	<DarkPaginationNav
 		totalItems={items.length}
 		{pageSize}
@@ -128,4 +120,4 @@
 		showStepOptions={true}
 		on:setPage={(e) => (currentPage = e.detail.page)}
 	/>
-</footer>
+</footer-->

@@ -65,7 +65,7 @@
 			<Route path="/my-events" component={MyEvents} />
 			<Route path="/my-account" component={MyAccount} />
 			<Route path="/create-account" component={CreateAccount} />
-			<Route path="/event/:id" let:params component={Event} />
+			<Route path="/event/:id" component={Event} />
 		</main>
 	</Router>
 </body>
