@@ -1,13 +1,28 @@
 <script>
 	import { Router, Link, Route } from 'svelte-routing';
-	import { events } from './data.js';
 	import { paginate, DarkPaginationNav } from 'svelte-paginate';
 
 	let currentPage = 1;
 	let pageSize = 9;
-	let items = events;
+	let events = [];
 
-	$: paginatedItems = paginate({ items, pageSize, currentPage });
+	async function fetchEvents() {
+		try {
+			const response = await fetch('http://127.0.0.1:8080/events');
+			if (response.ok) {
+				events = await response.json();
+				console.log("FETCHING WORKS")
+			} else {
+				console.error('Error fetching events data');
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	fetchEvents();
+
+	$: paginatedItems = paginate({ items: events, pageSize, currentPage });
 
 	let currentDate = new Date();
 	let currentYear = currentDate.toLocaleString('default', { year: 'numeric' });
@@ -82,7 +97,10 @@
 								<div class="col">
 									<Link to="/event/{event.id}">
 										<div class="row justify-content-md-center">
-											<img src="event-image.jpg" alt="Event" />
+											<!-- <img src="event-image.jpg" alt="Event" />  -->
+											<img src="{event.eventImage}" alt="">
+
+											<!-- HÄR ÄR BILD JÄVELN -->
 										</div>
 										<div class="row justify-content-md-center" id="undo-link">
 											{event.eventTitle}
@@ -119,7 +137,8 @@
 	</div>
 </div>
 
-<footer id="footer">
+
+<!-- <footer id="footer">
 	<DarkPaginationNav
 		totalItems={items.length}
 		{pageSize}
@@ -128,4 +147,4 @@
 		showStepOptions={true}
 		on:setPage={(e) => (currentPage = e.detail.page)}
 	/>
-</footer>
+</footer> -->

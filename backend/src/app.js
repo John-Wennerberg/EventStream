@@ -12,6 +12,7 @@ const pool = createPool({
   user: "root",
   password: "abc123",
   database: "abc",
+  connectionLimit: 20,
 })
 
 
@@ -68,6 +69,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
+/*
 app.post('/index', upload.single('eventImage'), async function (req, res, next) {
   try {
     const fileContent = req.file.buffer; // get the buffer containing the file contents
@@ -84,28 +86,65 @@ app.post('/index', upload.single('eventImage'), async function (req, res, next) 
     res.status(500).send('Error uploading file');
   }
 });
+*/
 
-app.use(express.json())
-app.post('/create-event',upload.single('eventImage'), async function (request, response) {
+
+
+
+app.post('/create-event', upload.single('eventImage'), async function (request, response) {
   const eventTitle = request.body.eventTitle
   const eventDate = request.body.eventDate
   const eventSalesDate = request.body.eventSalesDate
   const eventTicketLimit = request.body.eventTicketLimit
   const eventDescription = request.body.eventDescription
   const eventOrganizer = request.body.eventOrganizer
-  const eventImage = request.file.buffer // Use buffer to get the file content
-
+  const eventImage = request.file.toString('base64') // Use buffer to get the file content
+  //eventImage.toString('base64')
+  
 
   const connection = await pool.getConnection()
-
-  const [result] = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)', [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage])
-  if (result) {
-    response.status(200).json(result)
-  } else {
-    // handle the case where there is no result
+  try {
+    await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
+    response.status(200).json();
+    console.log("Upload Succesfull")
+  } catch (error) {
+    console.log(error)
     response.status(500).send('Internal Server Error')
-  } 
+  } finally {
+    connection.release()
+  }
+
 })
+
+
+
+
+
+// app.post('/create-event',upload.single('eventImage'), async function (request, response) {
+//   const eventTitle = request.body.eventTitle
+//   const eventDate = request.body.eventDate
+//   const eventSalesDate = request.body.eventSalesDate
+//   const eventTicketLimit = request.body.eventTicketLimit
+//   const eventDescription = request.body.eventDescription
+//   const eventOrganizer = request.body.eventOrganizer
+//   const eventImage = request.file.buffer // Use buffer to get the file content
+
+
+//   const connection = await pool.getConnection()
+//   try {
+//     let result = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
+//     [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
+//     response.status(200).json();
+//     console.log("Upload Succesfull")
+//   } catch (error) {
+//       console.log(error)
+//       response.status(500).send('Internal Server Error')
+//     } finally {
+//       connection.release()
+//     }
+  
+// })
 
 
 /*

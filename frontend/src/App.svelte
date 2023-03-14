@@ -9,6 +9,7 @@
 	import Start from './lib/start.svelte';	
 	import Event from './lib/event.svelte'
     import Index from './lib/index.svelte';
+    import Testtest from './lib/testtest.svelte';
 
 	const isLoggedIn = true;
 </script>
@@ -68,6 +69,7 @@
 			<Route path="/create-account" component={CreateAccount} />
 			<Route path="/event/:id" let:params component={Event} />
 			<Route path="/index" component = {Index} />
+			<Route path="/testtest" component = {Testtest}/>
 		</main>
 	</Router>
 </body>
