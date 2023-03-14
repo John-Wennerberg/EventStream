@@ -3,6 +3,7 @@
 	import { events } from './data.js';
 	import { paginate, DarkPaginationNav } from 'svelte-paginate';
 
+	
 	let currentPage = 1;
 	let pageSize = 9;
 	let items = events;
