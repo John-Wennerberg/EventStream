@@ -9,7 +9,7 @@
 	import Start from './lib/start.svelte';
 	import Event from './lib/event.svelte';
 
-	import { userStore } from './user-store';
+	import { user } from './user-store.js';
 </script>
 
 <head>
@@ -37,7 +37,7 @@
 				<li class="navbar-item">
 					<Link class="nav-link" to="/passed-events">Passed Events</Link>
 				</li>
-				{#if $userStore.isLoggedIn}
+				{#if $user.isLoggedIn}
 					<li>
 						<Link class="nav-link" to="/create-event">Create Event</Link>
 					</li>

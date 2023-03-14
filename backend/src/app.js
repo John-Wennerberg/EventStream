@@ -18,7 +18,6 @@ pool.on('error', function(error){
 
 const app = express()
 
-app.use(express)
 app.use(express.urlencoded())
 
 app.get("/", async function(request, response){
@@ -61,12 +60,12 @@ app.post("/tokens", function(request, response){
       isLoggedIn: true
     }
     jwt.sign(payload, ACCESS_TOKEN_SECRET, function(err, token){
-     if(error){
+     if(err){
       response.status(500).end()
      } else {
       response.status(200).json({
         access_token: token,
-        token_type: "bearer" //might be type not token_type
+        type: "bearer" //might be type not token_type
       })
      }
     })
