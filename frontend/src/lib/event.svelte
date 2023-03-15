@@ -1,20 +1,26 @@
-
-
-
-
-
-
-
-
 <script>
-  import { events } from "./data";
+  
 
 
   export let id
   let isFetchingEvent = true
   let failedToFetchEvent = false
-  let event = null
+  var event = null
 
+  function loadEvent() {
+    console.log(id)
+    fetch('http://localhost:8080/events'+id)
+        .then(response => response.json())
+        .then(event => {
+          isFetchingEvent=false
+            console.log(event)
+                console.log(event, "denna röven")
+                //console.log(Buffer.from(events[1].eventImage, 'base64'))
+        })
+        .catch(error => console.log("error"));
+        failedToFetchEvent=true
+}
+/*
   async function loadEvent(){
       try {
           const response = fetch("http://localhost:8080/events/"+id)
@@ -27,7 +33,8 @@
       }catch(error){
           failedToFetchEvent =true
       }
-  }   
+  }  
+  */ 
   loadEvent()
 
 
@@ -36,10 +43,10 @@
 <h1>Event</h1>
 {#if isFetchingEvent}
   <p>Wait i'm fetching data...</p>
-{:else if events}
-  <div>id : {events.findIndex[0]}</div>
-  <div>event name : {events.findIndex[1]}</div>
-  <div>time : {events.findIndex[2]}</div>
+{:else if event}
+  <div>id : {event.findIndex[0]}</div>
+  <div>event name : {event.findIndex[1]}</div>
+  <div>time : {event.findIndex[2]}</div>
 {:else}
   <p>No event with that id</p>
 {/if}

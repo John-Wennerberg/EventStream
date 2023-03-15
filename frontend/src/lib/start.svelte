@@ -98,8 +98,7 @@
 									<Link to="/event/{event.id}">
 										<div class="row justify-content-md-center">
 											<!-- <img src="event-image.jpg" alt="Event" />  -->
-											<img src="{event.eventImage}" alt="">
-
+											<img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
 											<!-- HÄR ÄR BILD JÄVELN -->
 										</div>
 										<div class="row justify-content-md-center" id="undo-link">

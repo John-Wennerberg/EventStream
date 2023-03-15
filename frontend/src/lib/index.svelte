@@ -1,6 +1,9 @@
 
 <script>
 
+
+
+
 // fetch('http://localhost:8080/events')
 //     .then(res => res.blob())
 //     .then(blob =>{
@@ -41,6 +44,8 @@ function fetchEvents() {
             //     })
             // })
                 events = data;
+                console.log(events, "denna röven")
+                //console.log(Buffer.from(events[1].eventImage, 'base64'))
             console.log(events[0].eventImage); 
             console.log(typeof events[0].eventImage);
         })
@@ -59,21 +64,13 @@ fetchEvents();
 
 </script>
 
-
-
-{events[0]}
 {#each events as event}
-
     <div>
         {#if event.eventImage}
-        <!-- <img src="{URL.createObjectURL(new Blob(event.eventImage.data))}"  alt=""/> -->
-        <!-- <img src="{'data:image/png;base64, '+ new Blob(event.eventImage.data).text()}"  alt=""/> -->
-        <!-- <img src="{'data:image/jpg;base64, '+ (event.eventImage.data)}"  alt=""/> -->
-        <img src="{'data:image/png;base64, '+ (event.eventImage)}"  alt=""/>
-        <!-- <img src="{event.eventImage}"  alt=""/> -->
-        <!-- <img src="data:image/png;base64, {(event.eventImage.data)}" alt=""> -->
-        <!-- <img src="data:image/png;base64, getImg()" alt=""/> -->
-        <!-- {events[event].eventImage} -->
+            <div class="event-container">
+                <img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""  width="200" 
+                height="300"/>
+            </div>
         {:else if event.eventImage}
             <div>
                 <p>
@@ -97,7 +94,9 @@ fetchEvents();
         {event.eventOrganizer}
     </div>
 {/each}
+<style>
 
+</style>
 
 
 

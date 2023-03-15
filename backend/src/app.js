@@ -50,8 +50,8 @@ app.get('/images/:id', async function(req, res) {
     res.status(404).send('Image not found');
   }
 });
-/*
 
+/*
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '/Users/alfred/Documents/GitHub/webdevadv-project/frontend/public/images')
@@ -61,8 +61,8 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
-*/
 
+*/
 //const upload = multer({ storage: storage })
 
 const storage = multer.memoryStorage();
@@ -88,7 +88,7 @@ app.post('/index', upload.single('eventImage'), async function (req, res, next) 
 });
 */
 
-
+//HÄÄÄRÄ ÄÄÄÄÄÄR 
 
 
 app.post('/create-event', upload.single('eventImage'), async function (request, response) {
@@ -98,8 +98,10 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventTicketLimit = request.body.eventTicketLimit
   const eventDescription = request.body.eventDescription
   const eventOrganizer = request.body.eventOrganizer
-  const eventImage = request.file.toString('base64') // Use buffer to get the file content
+  const eventImage = request.file.buffer.toString('base64') // Use buffer to get the file content
   //eventImage.toString('base64')
+
+  console.log('abc', eventImage)
   
 
   const connection = await pool.getConnection()
@@ -120,32 +122,32 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
 
 
 
+/*
+app.post('/create-event',upload.single('eventImage'), async function (request, response) {
+    const eventTitle = request.body.eventTitle
+    const eventDate = request.body.eventDate
+    const eventSalesDate = request.body.eventSalesDate
+    const eventTicketLimit = request.body.eventTicketLimit
+    const eventDescription = request.body.eventDescription
+    const eventOrganizer = request.body.eventOrganizer
+    const eventImage = request.file.buffer // Use buffer to get the file content
 
-// app.post('/create-event',upload.single('eventImage'), async function (request, response) {
-//   const eventTitle = request.body.eventTitle
-//   const eventDate = request.body.eventDate
-//   const eventSalesDate = request.body.eventSalesDate
-//   const eventTicketLimit = request.body.eventTicketLimit
-//   const eventDescription = request.body.eventDescription
-//   const eventOrganizer = request.body.eventOrganizer
-//   const eventImage = request.file.buffer // Use buffer to get the file content
 
-
-//   const connection = await pool.getConnection()
-//   try {
-//     let result = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
-//     [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
-//     response.status(200).json();
-//     console.log("Upload Succesfull")
-//   } catch (error) {
-//       console.log(error)
-//       response.status(500).send('Internal Server Error')
-//     } finally {
-//       connection.release()
-//     }
+    const connection = await pool.getConnection()
+    try {
+    let result = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
+    response.status(200).json();
+    console.log("Upload Succesfull")
+    } catch (error) {
+        console.log(error)
+        response.status(500).send('Internal Server Error')
+      } finally {
+      connection.release()
+    }
   
-// })
-
+})
+*/
 
 /*
 app.post('/index', upload.single('eventImage'), function (req, res, next) {
@@ -157,18 +159,26 @@ app.post('/index', upload.single('eventImage'), function (req, res, next) {
 */
 
 
-/*
-app.get("/events/:id", function(request,response){
-  const id = request.params.id
-  const event = events.find(e=> e.id == id)
 
-  if(event){
-    response.status(200).json(event)
-  }else{
-    response.status(404).end()
+app.get("/events/:id",async function(request,response){
+  const id = request.params.id
+  //const event = events.find(e=> e.id == id)
+  try{
+    const connection = await pool.getConnection()
+    const query = "SELECT id=? FROM events"
+
+    const events = await connection.query(query)
+
+    for(const event of events){
+      event.eventImage = event.eventImage.toString('utf8')
+    }
+    response.status(200).json(events)
+  }catch(error){
+    console.log(error)
+    response.status(500).end()
   }
 })
-*/
+
 
 app.get("/events", async function(request, response){
   console.log("Hello?!")
@@ -177,7 +187,11 @@ app.get("/events", async function(request, response){
     const query = "SELECT * FROM events"
 
     const events = await connection.query(query)
-    
+
+    for(const event of events){
+      event.eventImage = event.eventImage.toString('utf8')
+    }
+
     response.status(200).json(events)
 
   }catch(error){

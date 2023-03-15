@@ -2,7 +2,7 @@
 	import { DateInput } from 'date-picker-svelte';
 
 
-	let eventTitle = 'kbkb';
+	let eventTitle = '';
 	let eventDate = new Date();
 	let eventSalesDate = new Date();
 	let eventTicketLimit = 0;
@@ -13,6 +13,7 @@
 		event.preventDefault();
 				
 		const fileInput = event.target.querySelector('input[type="file"]');
+		//const eventDate = event.target.querySelector('input[type = ]')
 		const file = fileInput.files[0];
 		
 		const data = new FormData();
@@ -58,7 +59,7 @@
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Title:</div>
 			<div class="col col-lg-2">
-				<input type="text" name="eventTitle" placeholder="Title:" value="" />
+				<input type="text" name="eventTitle" placeholder="Title:" bind:value={eventTitle}/>
 			</div>
 		</div>
 		<div class="row justify-content-md-center">
@@ -76,8 +77,8 @@
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Tickets For Sale:</div>
 			<div class="col col-lg-2">
-				<input type="number" min="0" name="eventTicketLimit" placeholder="Tickets for sale:" value="" />
-			</div>
+				<input type="number" min="0" name="eventTicketLimit" placeholder="Tickets for sale:" bind:value={eventTicketLimit} />
+			</div>			  
 		</div>
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Upload Image:</div>
