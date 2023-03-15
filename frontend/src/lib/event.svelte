@@ -8,13 +8,14 @@
   var event = null
 
   function loadEvent() {
-    console.log(id)
-    fetch('http://localhost:8080/events'+id)
+    console.log(id, "inne i events ")
+    fetch('http://localhost:8080/events/'+id)
         .then(response => response.json())
-        .then(event => {
+        .then(events => {
           isFetchingEvent=false
-            console.log(event)
-                console.log(event, "denna röven")
+          console.log(events, "denna röven")
+
+          event = events
                 //console.log(Buffer.from(events[1].eventImage, 'base64'))
         })
         .catch(error => console.log("error"));
@@ -43,10 +44,30 @@
 <h1>Event</h1>
 {#if isFetchingEvent}
   <p>Wait i'm fetching data...</p>
-{:else if event}
-  <div>id : {event.findIndex[0]}</div>
-  <div>event name : {event.findIndex[1]}</div>
-  <div>time : {event.findIndex[2]}</div>
+{:else if isFetchingEvent == false}
+  {#each event as events}
+  <div>
+    <p>
+    id : {events.eventID}
+    </p> 
+  </div>
+  <div>
+    <p>
+      event name : {events.eventTitle}
+    </p>
+  </div>
+  <div>
+    <p>
+      time : {events.eventDate}
+    </p> 
+  </div>
+  <div>
+    <p>
+      Description : {events.eventDescription}
+    </p>
+  </div>
+  {/each}
+
 {:else}
   <p>No event with that id</p>
 {/if}

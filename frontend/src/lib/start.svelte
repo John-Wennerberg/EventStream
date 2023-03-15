@@ -6,6 +6,21 @@
 	let pageSize = 9;
 	let events = [];
 
+	function fetchEvents() {
+    fetch('http://localhost:8080/events')
+        .then(response => response.json())
+        .then(event => {
+            console.log(event)
+        	event.forEach((d)=> {
+				console.log(d.eventID)
+		})
+            //console.log(event.eventID[0],event.eventTitle[0], "denna röven")
+			events = event
+
+        })
+        .catch(error => console.log("error"));
+}
+/*
 	async function fetchEvents() {
 		try {
 			const response = await fetch('http://127.0.0.1:8080/events');
@@ -19,9 +34,8 @@
 			console.error(error);
 		}
 	}
-
+*/
 	fetchEvents();
-
 	$: paginatedItems = paginate({ items: events, pageSize, currentPage });
 
 	let currentDate = new Date();
@@ -89,13 +103,15 @@
 	</div>
 	<div class="container">
 		<div class="row row-cols-3 justify-content-md-center">
+			<!-- {#each paginatedItems as event} -->
 			{#each paginatedItems as event}
 				<Router>
 					{#if event.eventDate > formattedDate && showCurrentEvents}
 						<div class="container">
 							<div class="row justify-content-md-center">
 								<div class="col">
-									<Link to="/event/{event.id}">
+									<!-- <Link to="/event/{event.id}"> -->
+										<Link to={`/event/${event.eventID}`}>
 										<div class="row justify-content-md-center">
 											<!-- <img src="event-image.jpg" alt="Event" />  -->
 											<img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
@@ -115,7 +131,8 @@
 						<div class="container">
 							<div class="row justify-content-md-center">
 								<div class="col">
-									<Link to="/event/{event.id}">
+									<!-- <Link to="/event/{event.id}"> -->
+									<Link to={`/event/${event.eventID}`}>
 										<div class="row justify-content-md-center">
 											<img src="event-image.jpg" alt="Event" />
 										</div>

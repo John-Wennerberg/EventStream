@@ -160,24 +160,25 @@ app.post('/index', upload.single('eventImage'), function (req, res, next) {
 
 
 
-app.get("/events/:id",async function(request,response){
-  const id = request.params.id
-  //const event = events.find(e=> e.id == id)
-  try{
-    const connection = await pool.getConnection()
-    const query = "SELECT id=? FROM events"
+app.get("/events/:id", async function(request, response) {
+  const eventID = request.params.id;
+  console.log(eventID, "i backend")
+  try {
+    const connection = await pool.getConnection();
+    const query = "SELECT * FROM events WHERE eventID = ?";
+    const events = await connection.query(query, [eventID]);
 
-    const events = await connection.query(query)
-
-    for(const event of events){
-      event.eventImage = event.eventImage.toString('utf8')
+    for (const event of events) {
+      event.eventImage = event.eventImage.toString("utf8");
     }
-    response.status(200).json(events)
-  }catch(error){
-    console.log(error)
-    response.status(500).end()
+
+    response.status(200).json(events);
+  } catch (error) {
+    console.log(error);
+    response.status(500).end();
   }
-})
+});
+
 
 
 app.get("/events", async function(request, response){
