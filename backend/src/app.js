@@ -18,15 +18,22 @@ pool.on('error', function(error){
 
 const app = express()
 
-app.use(express.urlencoded())
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+app.use(function (request, response, next) {
+
+  response.set("Access-Control-Allow-Origin", "*")
+  response.set("Access-Control-Allow-Methods", "*")
+  response.set("Access-Control-Allow-Headers", "*")
+  response.set("Access-Control-Expose-Headers", "*")
+
+  next()
+
+})
 
 app.get("/", async function(request, response){
   console.log("Received GET /")
-
-  response.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  )
 
   try{
     const connection = await pool.getConnection()

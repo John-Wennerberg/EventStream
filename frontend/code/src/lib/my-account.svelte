@@ -1,7 +1,6 @@
 <script>
 	import { accounts } from './data.js';
-
-	const myUsername = 'John';
+	import { user } from '../user-store.js'
 
 </script>
 
@@ -24,21 +23,7 @@
 		<div class="row justify-content-md-center" id="text-color">
 			<div class="col-lg-1">Username:</div>
 			<div class="col-lg-2">
-				{#each accounts as account}
-					{#if account.username == myUsername}
-						{account.username}
-					{/if}
-				{/each}
-			</div>
-		</div>
-		<div class="row justify-content-md-center" id="text-color">
-			<div class="col-lg-1">Email:</div>
-			<div class="col-lg-2">
-				{#each accounts as account}
-					{#if account.username == myUsername}
-						{account.email}
-					{/if}
-				{/each}
+				{$user.username}
 			</div>
 		</div>
 	</div>

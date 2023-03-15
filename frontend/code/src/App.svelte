@@ -51,9 +51,6 @@
 					<li class="navbar-item">
 						<Link class="nav-link" to="/login">Login</Link>
 					</li>
-					<li>
-						<Link class="nav-link" to="/create-account">Create Account</Link>
-					</li>
 				{/if}
 			</ul>
 		</nav>

@@ -2,6 +2,7 @@
 	import { accounts } from './data.js';
 	import { Router, Link, Route } from 'svelte-routing';
 	import { user } from '../user-store.js';
+	import { prevent_default } from 'svelte/internal';
 
 	let username = '';
 	let password = '';
@@ -22,7 +23,8 @@
 
 		$user = {
 			isLoggedIn: true,
-			accessToken: accessToken,
+			accessToken,
+			username: username,
 		};
 	}
 </script>
@@ -40,7 +42,7 @@
 			</div>
 		</div>
 	</div>
-	{#if $user.isLoggedIn == false}
+	{#if !$user.isLoggedIn}
 		<div class="container" id="pad-top-10">
 			<form on:submit|preventDefault={login}>
 				<div class="row justify-content-md-center">
@@ -55,9 +57,7 @@
 				</div>
 				<div class="row justify-content-md-center">
 					<div class="col-md-auto">
-						<form method="GET">
-							<input class="btn btn-primary" id="login-button" type="submit" value="Login" />
-						</form>
+						<input class="btn btn-primary" id="login-button" type="submit" value="Login" />
 					</div>
 				</div>
 			</form>
@@ -77,9 +77,7 @@
 	{:else}
 		<div class="container" id="pad-top-10">
 			<div class="row justify-content-md-center">
-				<div class="col-md-auto">
-					LOGGED IN
-				</div>
+				<div class="col-md-auto">LOGGED IN</div>
 			</div>
 		</div>
 	{/if}
