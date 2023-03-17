@@ -33,18 +33,6 @@
 				<input type="password" placeholder="Repeat Password:" value="" />
 			</div>
 		</div>
-		<div class="row justify-content-md-center">
-			<div class="col-lg-2" id="text-color">Email Address:</div>
-			<div class="col-md-auto">
-				<input type="text" name="email" placeholder="Email Address:" value="" />
-			</div>
-		</div>
-		<div class="row justify-content-md-center">
-			<div class="col-lg-2" id="text-color">Repeat Email Address:</div>
-			<div class="col-md-auto">
-				<input type="text" placeholder="Email Address:" value="" />
-			</div>
-		</div>
 		<div class="row justify-content-md-center" id="pad-top-1">
 			<div class="col-md-auto">
 				<form method="post">

@@ -3,6 +3,10 @@ import jwt from 'jsonwebtoken'
 import {createPool} from 'mariadb'
 import multer from 'multer'
 import path from 'path'
+
+const bcrypt = require('bcrypt')
+const saltRounds = 10
+
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
 
 
@@ -92,7 +96,6 @@ app.get("/events/:id", async function(request, response) {
 
 
 
-<<<<<<< HEAD
 app.get("/events", async function(request, response){
   console.log("Hello?!")
   try{
@@ -111,20 +114,6 @@ app.get("/events", async function(request, response){
     console.log(error)
     response.status(500).end()
   }
-=======
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-
-app.use(function (request, response, next) {
-
-  response.set("Access-Control-Allow-Origin", "*")
-  response.set("Access-Control-Allow-Methods", "*")
-  response.set("Access-Control-Allow-Headers", "*")
-  response.set("Access-Control-Expose-Headers", "*")
-
-  next()
-
->>>>>>> main
 })
 
 app.get("/", async function(request, response){
@@ -156,22 +145,36 @@ app.post("/tokens", function(request, response){
     return
   }
 
-  if(username == "john" && password == "123321"){
-
-    const payload = {
-      isLoggedIn: true
-    }
-    jwt.sign(payload, ACCESS_TOKEN_SECRET, function(err, token){
-     if(err){
-      response.status(500).end()
-     } else {
-      response.status(200).json({
-        access_token: token,
-        type: "bearer" //might be type not token_type
+  /*const eventID = request.params.id;
+  console.log(eventID, "i backend")
+  try {
+    const connection = await pool.getConnection();
+    const query = "SELECT * FROM events WHERE eventID = ?";
+    const events = await connection.query(query, [eventID]);*/
+  console.log("Retrieving Hash from DB")
+  try{  
+    const query = 'SELECT accountHash FROM accounts WHERE accountUsername = ?'
+    const accountHash = await connection.query(query, [username]);
+    bcrypt.compare(password, accountHash).then(function(result){
+      const payload = {
+        isLoggedIn: true
+      }
+      jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
+        if (err) {
+          response.status(500).end()
+        } else {
+          response.status(200).json({
+            access_token: token,
+            type: "bearer" //might be type not token_type
+          })
+        }
       })
-     }
     })
-  } else {
+  } catch (error){
+    console.log(error)
+    response.status(500).end()
+  }
+  else {
     response.status(400).json({error: "invalid_grant"})
   }
 
