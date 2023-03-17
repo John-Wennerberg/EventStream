@@ -16,5 +16,4 @@ export const events = [
 export const accounts = [
   { id: 1, "username":"John", "password":"123456", "email":"john.johnsson@john.com"},
   { id: 2, "username":"Test", "password":"testsson", "email":"test@testsson.com"},
-  { id: 3, "username":"Test1", "password":"testsson1", "email":"tes2t@testsson.com"}
 ]

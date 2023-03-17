@@ -1,42 +1,7 @@
 <script>
 	import { Router, Link, Route } from 'svelte-routing';
+	import { events } from './data.js';
 	import { paginate, DarkPaginationNav } from 'svelte-paginate';
-
-	let currentPage = 1;
-	let pageSize = 9;
-	let events = [];
-
-	function fetchEvents() {
-    fetch('http://localhost:8080/events')
-        .then(response => response.json())
-        .then(event => {
-            console.log(event)
-        	event.forEach((d)=> {
-				console.log(d.eventID)
-		})
-            //console.log(event.eventID[0],event.eventTitle[0], "denna röven")
-			events = event
-
-        })
-        .catch(error => console.log("error"));
-}
-/*
-	async function fetchEvents() {
-		try {
-			const response = await fetch('http://127.0.0.1:8080/events');
-			if (response.ok) {
-				events = await response.json();
-				console.log("FETCHING WORKS")
-			} else {
-				console.error('Error fetching events data');
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	}
-*/
-	fetchEvents();
-	$: paginatedItems = paginate({ items: events, pageSize, currentPage });
 
 	let currentDate = new Date();
 	let currentYear = currentDate.toLocaleString('default', { year: 'numeric' });
@@ -57,10 +22,41 @@
 			showCurrentEvents = true;
 		}
 	}
-
 	document.addEventListener('DOMContentLoaded', function () {
 		const swapEventButtons = document.querySelectorAll('button');
 
+		fetch('http://localhost:8080')
+			.then((response) => response.json())
+			.then((data) => {
+				data.forEach((item) => {
+					const htmlSegment =
+						`<Router>
+							<div class="container">
+								<div class="row justify-content-md-center">
+									<div class="col">
+										<Link to="/event/${item.eventID}">
+											<div class="row justify-content-md-center">
+												img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
+											</div>
+											<div class="row justify-content-md-center" id="undo-link">
+												${item.eventTitle}
+											</div>
+											<div class="row justify-content-md-center">
+												<hr id="event-underline" />
+											</div>
+										</Link>
+									</div>
+								</div>
+							</div>
+						</Router>`
+
+	if(item.eventDate > formattedDate && showCurrentEvents){
+						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
+					} else if(item.eventDate < formattedDate && !showCurrentEvents){
+						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
+					}
+				});
+			});
 		swapEventButtons[0].addEventListener('click', function (event) {
 			event.preventDefault();
 			if (swapEventButtons[0].id == 'swap-button-inactive') {
@@ -101,57 +97,15 @@
 			</div>
 		</div>
 	</div>
+
+	
 	<div class="container">
-		<div class="row row-cols-3 justify-content-md-center">
-			<!-- {#each paginatedItems as event} -->
-			{#each paginatedItems as event}
-				<Router>
-					{#if event.eventDate > formattedDate && showCurrentEvents}
-						<div class="container">
-							<div class="row justify-content-md-center">
-								<div class="col">
-									<!-- <Link to="/event/{event.id}"> -->
-										<Link to={`/event/${event.eventID}`}>
-										<div class="row justify-content-md-center">
-											<!-- <img src="event-image.jpg" alt="Event" />  -->
-											<img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
-											<!-- HÄR ÄR BILD JÄVELN -->
-										</div>
-										<div class="row justify-content-md-center" id="undo-link">
-											{event.eventTitle}
-										</div>
-										<div class="row justify-content-md-center">
-											<hr id="event-underline" />
-										</div>
-									</Link>
-								</div>
-							</div>
-						</div>
-					{:else if event.eventDate < formattedDate && !showCurrentEvents}
-						<div class="container">
-							<div class="row justify-content-md-center">
-								<div class="col">
-									<!-- <Link to="/event/{event.id}"> -->
-									<Link to={`/event/${event.eventID}`}>
-										<div class="row justify-content-md-center">
-											<img src="event-image.jpg" alt="Event" />
-										</div>
-										<div class="row justify-content-md-center" id="undo-link">
-											{event.eventTitle}
-										</div>
-										<div class="row justify-content-md-center">
-											<hr id="event-underline" />
-										</div>
-									</Link>
-								</div>
-							</div>
-						</div>
-					{/if}
-				</Router>
-			{/each}
+		<div class="row row-cols-3 justify-content-md-center" id="display-event">
 		</div>
 	</div>
 </div>
+
+
 
 
 <!-- <footer id="footer">
