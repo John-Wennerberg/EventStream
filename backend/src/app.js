@@ -1,4 +1,5 @@
 import express from 'express'
+import jwt from 'jsonwebtoken'
 import {createPool} from 'mariadb'
 import multer from 'multer'
 import path from 'path'
@@ -91,6 +92,7 @@ app.get("/events/:id", async function(request, response) {
 
 
 
+<<<<<<< HEAD
 app.get("/events", async function(request, response){
   console.log("Hello?!")
   try{
@@ -109,6 +111,20 @@ app.get("/events", async function(request, response){
     console.log(error)
     response.status(500).end()
   }
+=======
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+app.use(function (request, response, next) {
+
+  response.set("Access-Control-Allow-Origin", "*")
+  response.set("Access-Control-Allow-Methods", "*")
+  response.set("Access-Control-Allow-Headers", "*")
+  response.set("Access-Control-Expose-Headers", "*")
+
+  next()
+
+>>>>>>> main
 })
 
 app.get("/", async function(request, response){

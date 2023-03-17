@@ -24,6 +24,7 @@
 			<div class="col-lg-1">Username:</div>
 			<div class="col-lg-2">
 				{$user.username}
+<<<<<<< HEAD:frontend/src/lib/my-account.svelte
 			</div>
 		</div>
 	</div>
@@ -64,6 +65,8 @@
 						{account.email}
 					{/if}
 				{/each}
+=======
+>>>>>>> main:frontend/code/src/lib/my-account.svelte
 			</div>
 		</div>
 	</div>

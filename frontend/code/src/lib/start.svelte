@@ -36,7 +36,11 @@
 									<div class="col">
 										<Link to="/event/${item.eventID}">
 											<div class="row justify-content-md-center">
+<<<<<<< HEAD:frontend/src/lib/start.svelte
 												img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
+=======
+												<img src="event-image.jpg" alt="Event" />
+>>>>>>> main:frontend/code/src/lib/start.svelte
 											</div>
 											<div class="row justify-content-md-center" id="undo-link">
 												${item.eventTitle}
@@ -49,8 +53,12 @@
 								</div>
 							</div>
 						</Router>`
+<<<<<<< HEAD:frontend/src/lib/start.svelte
 
 	if(item.eventDate > formattedDate && showCurrentEvents){
+=======
+					if(item.eventDate > formattedDate && showCurrentEvents){
+>>>>>>> main:frontend/code/src/lib/start.svelte
 						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
 					} else if(item.eventDate < formattedDate && !showCurrentEvents){
 						document.querySelector('#display-event').insertAdjacentHTML('beforeend', htmlSegment)
@@ -105,10 +113,14 @@
 	</div>
 </div>
 
+<<<<<<< HEAD:frontend/src/lib/start.svelte
 
 
 
 <!-- <footer id="footer">
+=======
+<!--footer id="footer">
+>>>>>>> main:frontend/code/src/lib/start.svelte
 	<DarkPaginationNav
 		totalItems={items.length}
 		{pageSize}
@@ -117,4 +129,8 @@
 		showStepOptions={true}
 		on:setPage={(e) => (currentPage = e.detail.page)}
 	/>
+<<<<<<< HEAD:frontend/src/lib/start.svelte
 </footer> -->
+=======
+</footer-->
+>>>>>>> main:frontend/code/src/lib/start.svelte
