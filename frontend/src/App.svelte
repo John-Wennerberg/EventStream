@@ -6,12 +6,10 @@
 	import MyAccount from './lib/my-account.svelte';
 	import MyEvents from './lib/my-events.svelte';
 	import PassedEvents from './lib/passed-events.svelte';
-	import Start from './lib/start.svelte';	
-	import Event from './lib/event.svelte'
-    import Index from './lib/index.svelte';
-    import Testtest from './lib/testtest.svelte';
+	import Start from './lib/start.svelte';
+	import Event from './lib/event.svelte';
 
-	const isLoggedIn = true;
+	import { user } from './user-store.js';
 </script>
 
 <head>
@@ -31,7 +29,7 @@
 
 <body>
 	<Router>
-		<nav class="navbar justify-content-center navbar-expand-lg navbar-dark bg-dark"> 
+		<nav class="navbar justify-content-center navbar-expand-lg navbar-dark bg-dark">
 			<ul class="navbar-nav" id="centered-nav">
 				<li class="navbar-item active">
 					<Link class="nav-link" to="/">Home</Link>
@@ -39,10 +37,7 @@
 				<li class="navbar-item">
 					<Link class="nav-link" to="/passed-events">Passed Events</Link>
 				</li>
-				<li class="navbar-item">
-					<Link class="nav-link" to="/login">Login</Link>
-				</li>
-				{#if isLoggedIn}
+				{#if $user.isLoggedIn}
 					<li>
 						<Link class="nav-link" to="/create-event">Create Event</Link>
 					</li>
@@ -53,8 +48,8 @@
 						<Link class="nav-link" to="/my-account">My Account</Link>
 					</li>
 				{:else}
-					<li>
-						<Link class="nav-link" to="/create-account">Create Account</Link>
+					<li class="navbar-item">
+						<Link class="nav-link" to="/login">Login</Link>
 					</li>
 				{/if}
 			</ul>
@@ -67,10 +62,7 @@
 			<Route path="/my-events" component={MyEvents} />
 			<Route path="/my-account" component={MyAccount} />
 			<Route path="/create-account" component={CreateAccount} />
-			<Route path="/event/:id" let:params component={Event} />
-			<Route path="/index" component = {Index} />
-			<Route path="/testtest" component = {Testtest}/>
+			<Route path="/event/:id" component={Event} />
 		</main>
 	</Router>
 </body>
-

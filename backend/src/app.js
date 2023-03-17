@@ -5,7 +5,7 @@ import path from 'path'
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
 
 
-
+const ACCESS_TOKEN_SECRET = "oaipfgauighASHFjagh"
 const pool = createPool({
   host: "db",
   port: 3306,
@@ -22,7 +22,7 @@ pool.on('error', function(error){
 })
 
 const app = express()
-
+app.use(express.urlencoded({extended: true}))
 app.use(function(request, response, next){
 	
 	response.set("Access-Control-Allow-Origin", "*")
@@ -34,61 +34,10 @@ app.use(function(request, response, next){
 	
 })
 
-app.get("/index", function (request, response) {
-  console.log("inne i get")
-  response.send("upload")
-})
-app.get('/images/:id', async function(req, res) {
-  const id = req.params.id;
-  const connection = await pool.getConnection();
-  const result = await connection.query('SELECT * FROM images WHERE id = ?', [id]);
-  connection.release();
-  if (result.length > 0) {
-    res.setHeader('Content-Type', 'image/png'); // replace 'png' with the actual image type
-    res.send(result[0].content);
-  } else {
-    res.status(404).send('Image not found');
-  }
-});
 
-/*
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '/Users/alfred/Documents/GitHub/webdevadv-project/frontend/public/images')
-  },
-  filename: function (req, file, cb) {
-    console.log(file)
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
-})
-
-*/
-//const upload = multer({ storage: storage })
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
-
-/*
-app.post('/index', upload.single('eventImage'), async function (req, res, next) {
-  try {
-    const fileContent = req.file.buffer; // get the buffer containing the file contents
-
-    // insert the file contents into the database
-    await pool.query("INSERT INTO images (filename, content) VALUES (?, ?)", [
-      req.file.originalname,
-      fileContent
-    ]);
-
-    res.send('File uploaded successfully!');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error uploading file');
-  }
-});
-*/
-
-//HÄÄÄRÄ ÄÄÄÄÄÄR 
 
 
 app.post('/create-event', upload.single('eventImage'), async function (request, response) {
@@ -98,8 +47,8 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventTicketLimit = request.body.eventTicketLimit
   const eventDescription = request.body.eventDescription
   const eventOrganizer = request.body.eventOrganizer
-  const eventImage = request.file.buffer.toString('base64') // Use buffer to get the file content
-  //eventImage.toString('base64')
+  const eventImage = request.file.buffer.toString('base64')
+  
 
   console.log('abc', eventImage)
   
@@ -118,45 +67,6 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   }
 
 })
-
-
-
-
-/*
-app.post('/create-event',upload.single('eventImage'), async function (request, response) {
-    const eventTitle = request.body.eventTitle
-    const eventDate = request.body.eventDate
-    const eventSalesDate = request.body.eventSalesDate
-    const eventTicketLimit = request.body.eventTicketLimit
-    const eventDescription = request.body.eventDescription
-    const eventOrganizer = request.body.eventOrganizer
-    const eventImage = request.file.buffer // Use buffer to get the file content
-
-
-    const connection = await pool.getConnection()
-    try {
-    let result = await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
-    response.status(200).json();
-    console.log("Upload Succesfull")
-    } catch (error) {
-        console.log(error)
-        response.status(500).send('Internal Server Error')
-      } finally {
-      connection.release()
-    }
-  
-})
-*/
-
-/*
-app.post('/index', upload.single('eventImage'), function (req, res, next) {
-  // req.file is the `eventImage` file
-  // req.body will contain the text fields, if there were any
-  console.log("inne i post")
-  res.send('File uploaded Successfully!')
-})
-*/
 
 
 
@@ -201,10 +111,55 @@ app.get("/events", async function(request, response){
   }
 })
 
-app.get("/", function(request, response){
-  response.send("It works")
+app.get("/", async function(request, response){
+  console.log("Received GET /")
+
+  try{
+    const connection = await pool.getConnection()
+    const query = "SELECT * FROM events"
+
+    const events = await connection.query(query)
+    
+    response.status(200).json(events)
+
+  }catch(error){
+    console.log(error)
+    response.status(500).end()
+  }
 })
 
+app.post("/tokens", function(request, response){
+  console.log("Received POST /tokens")
+
+  const grantType = request.body.grant_type
+  const username = request.body.username
+  const password = request.body.password
+
+  if(grantType  != "password"){
+    response.status(400).json({ error: "unsupported_grant_type "})
+    return
+  }
+
+  if(username == "john" && password == "123321"){
+
+    const payload = {
+      isLoggedIn: true
+    }
+    jwt.sign(payload, ACCESS_TOKEN_SECRET, function(err, token){
+     if(err){
+      response.status(500).end()
+     } else {
+      response.status(200).json({
+        access_token: token,
+        type: "bearer" //might be type not token_type
+      })
+     }
+    })
+  } else {
+    response.status(400).json({error: "invalid_grant"})
+  }
+
+})
 
 
 app.listen(8080, () => {
