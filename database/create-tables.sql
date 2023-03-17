@@ -6,16 +6,18 @@ CREATE TABLE events (
   eventOrganizer VARCHAR(255),
   eventTicketLimit INT,
   eventDescription VARCHAR(255),
-  eventImage LONGBLOB 
+  eventImage LONGBLOB
 );
 
 CREATE TABLE accounts (
   accountID INT PRIMARY KEY AUTO_INCREMENT,
   accountUsername VARCHAR(50),
   accountHash VARCHAR(255)
-)
+);
 
-
+INSERT INTO accounts(accountUsername, accountHash) VALUES
+("John", ""),
+("Affe", "");
 
  INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventOrganizer, eventTicketLimit, eventDescription, eventImage ) VALUES 
  ("Festival 1", "2023-01-31", "2023-01-30 16:00:00", "John",  4, "Eddie Meduzas Greatest Hits", "./public/image/event-image.jpg"),

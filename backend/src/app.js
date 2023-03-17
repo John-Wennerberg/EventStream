@@ -1,10 +1,10 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
-import {createPool} from 'mariadb'
+import { createPool } from 'mariadb'
 import multer from 'multer'
 import path from 'path'
 
-const bcrypt = require('bcrypt')
+import bcrypt from 'bcrypt'
 const saltRounds = 10
 
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
@@ -22,21 +22,22 @@ const pool = createPool({
 
 
 
-pool.on('error', function(error){
+pool.on('error', function (error) {
   console.log("Error from pool", error)
 })
 
 const app = express()
-app.use(express.urlencoded({extended: true}))
-app.use(function(request, response, next){
-	
-	response.set("Access-Control-Allow-Origin", "*")
-	response.set("Access-Control-Allow-Methods", "*")
-	response.set("Access-Control-Allow-Headers", "*")
-	response.set("Access-Control-Expose-Headers", "*")
-	
-	next()
-	
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(function (request, response, next) {
+
+  response.set("Access-Control-Allow-Origin", "*")
+  response.set("Access-Control-Allow-Methods", "*")
+  response.set("Access-Control-Allow-Headers", "*")
+  response.set("Access-Control-Expose-Headers", "*")
+
+  next()
+
 })
 
 
@@ -53,10 +54,10 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventDescription = request.body.eventDescription
   const eventOrganizer = request.body.eventOrganizer
   const eventImage = request.file.buffer.toString('base64')
-  
+
 
   console.log('abc', eventImage)
-  
+
 
   const connection = await pool.getConnection()
   try {
@@ -75,7 +76,7 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
 
 
 
-app.get("/events/:id", async function(request, response) {
+app.get("/events/:id", async function (request, response) {
   const eventID = request.params.id;
   console.log(eventID, "i backend")
   try {
@@ -96,88 +97,101 @@ app.get("/events/:id", async function(request, response) {
 
 
 
-app.get("/events", async function(request, response){
+app.get("/events", async function (request, response) {
   console.log("Hello?!")
-  try{
+  try {
     const connection = await pool.getConnection()
     const query = "SELECT * FROM events"
 
     const events = await connection.query(query)
 
-    for(const event of events){
+    for (const event of events) {
       event.eventImage = event.eventImage.toString('utf8')
     }
 
     response.status(200).json(events)
 
-  }catch(error){
+  } catch (error) {
     console.log(error)
     response.status(500).end()
   }
 })
 
-app.get("/", async function(request, response){
+app.get("/", async function (request, response) {
   console.log("Received GET /")
 
-  try{
+  try {
     const connection = await pool.getConnection()
     const query = "SELECT * FROM events"
 
     const events = await connection.query(query)
-    
+
     response.status(200).json(events)
 
-  }catch(error){
+  } catch (error) {
     console.log(error)
     response.status(500).end()
   }
 })
 
-app.post("/tokens", function(request, response){
+app.post("/tokens", async function (request, response) {
   console.log("Received POST /tokens")
 
   const grantType = request.body.grant_type
-  const username = request.body.username
   const password = request.body.password
+  const username = request.body.username
 
-  if(grantType  != "password"){
-    response.status(400).json({ error: "unsupported_grant_type "})
+  if (grantType != "password") {
+    response.status(400).json({ error: "unsupported_grant_type " })
     return
   }
-
-  /*const eventID = request.params.id;
-  console.log(eventID, "i backend")
-  try {
-    const connection = await pool.getConnection();
-    const query = "SELECT * FROM events WHERE eventID = ?";
-    const events = await connection.query(query, [eventID]);*/
   console.log("Retrieving Hash from DB")
-  try{  
+  try {
+    const connection = await pool.getConnection()
     const query = 'SELECT accountHash FROM accounts WHERE accountUsername = ?'
     const accountHash = await connection.query(query, [username]);
-    bcrypt.compare(password, accountHash).then(function(result){
-      const payload = {
-        isLoggedIn: true
-      }
-      jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
-        if (err) {
-          response.status(500).end()
-        } else {
-          response.status(200).json({
-            access_token: token,
-            type: "bearer" //might be type not token_type
-          })
+
+    bcrypt.compare(password, toString(accountHash)).then(function (result) {
+      if (result) {
+        const payload = {
+          isLoggedIn: true
         }
-      })
+        jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
+          if (err) {
+            response.status(500).end()
+          } else {
+            response.status(200).json({
+              access_token: token,
+              type: "bearer" //might be type not token_type
+            })
+          }
+        })
+      } else {
+        response.status(400).json({error: "invalid_grant"})
+      }
     })
-  } catch (error){
+  } catch (error) {
     console.log(error)
     response.status(500).end()
   }
-  else {
-    response.status(400).json({error: "invalid_grant"})
-  }
+})
 
+app.post("/createAccount", async function(request, response){
+  console.log("Received POST /createAccount")
+
+  const account = request.body
+  console.log(account[0])
+  try{
+    const connection = await pool.getConnection()
+    const query = 'INSERT INTO accounts (accountUsername, accountHash) VALUES (? , ?)'
+    const hashedPassword = await bcrypt.hash(account.password, saltRounds)
+      connection.query(query, [account.username,hashedPassword])
+      console.log(account.username + ' created')
+  
+  } catch (error) {
+    console.log(error)
+    response.status(500).end()
+  }
 })
 
 
