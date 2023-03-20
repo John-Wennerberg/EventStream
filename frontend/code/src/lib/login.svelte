@@ -1,8 +1,7 @@
 <script>
-	import { accounts } from './data.js';
 	import { Router, Link, Route } from 'svelte-routing';
 	import { user } from '../user-store.js';
-	import { prevent_default } from 'svelte/internal';
+
 
 	let username = '';
 	let password = '';
@@ -46,11 +45,13 @@
 		<div class="container" id="pad-top-10">
 			<form on:submit|preventDefault={login}>
 				<div class="row justify-content-md-center">
+					<div class="col-lg-1" id="text-color">Username:</div>
 					<div class="col-md-auto">
 						<input type="text" placeholder="Username:" bind:value={username} />
 					</div>
 				</div>
 				<div class="row justify-content-md-center">
+					<div class="col-lg-1" id="text-color">Password:</div>
 					<div class="col-md-auto">
 						<input type="password" placeholder="Password:" bind:value={password} />
 					</div>
