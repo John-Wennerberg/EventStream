@@ -2,29 +2,40 @@
 	import { Router, Link, Route } from 'svelte-routing';
 	import { user } from '../user-store.js';
 
-
 	let username = '';
 	let password = '';
 
+	const errors = []
 	async function login() {
-		const response = await fetch('http://localhost:8080/tokens', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(
-				password
-			)}`,
-		});
-
-		const body = await response.json();
-		const accessToken = body.access_token;
-
-		$user = {
-			isLoggedIn: true,
-			accessToken,
-			username: username,
-		};
+		try {
+			const response = await fetch('http://localhost:8080/tokens', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(
+					password
+				)}`,
+			});
+			const body = await response.json();
+			switch (response.status) {
+				case 200:
+					const accessToken = body.access_token;
+					$user = {
+						isLoggedIn: true,
+						accessToken,
+						username: username,
+					};
+				case 400:
+					errors.push(await response.json())
+				case 401:
+					errors.push(await response.json())
+				case 500:
+					errors.push("Internal Server Error")
+			}
+		} catch (error) {
+			errors.push(error)
+		}
 	}
 </script>
 
@@ -41,7 +52,17 @@
 			</div>
 		</div>
 	</div>
-	{#if !$user.isLoggedIn}
+	{#if errors.length > 0}
+		{#each errors as error}
+			<div class="container">
+				<div class="row">
+					<div class="col-sm">
+						{error}
+					</div>
+				</div>
+			</div>
+		{/each}
+	{:else if !$user.isLoggedIn}
 		<div class="container" id="pad-top-10">
 			<form on:submit|preventDefault={login}>
 				<div class="row justify-content-md-center">
