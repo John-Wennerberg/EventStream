@@ -33,4 +33,8 @@ CREATE TABLE comments (
 
 INSERT INTO comments(commentAuthor, commentBody, commentEventID) VALUES
 ("John", "This event was amazing", 4),
+("User", "This event sucked man!!!!!!!", 4),
+("User", "This event sucked man!!!!!!!", 1),
+("User", "This event sucked man!!!!!!!", 2),
+("User", "This event sucked man!!!!!!!", 3),
 ("User", "This event sucked man!!!!!!!", 4);

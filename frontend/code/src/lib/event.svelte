@@ -1,121 +1,197 @@
 <script>
-  
+	import { user } from '../user-store.js';
+	export let id;
+	let isFetchingEvent = true;
+	var event = null;
+	var comments = [];
+	const errors = [];
 
+	async function loadEvent() {
+		console.log(id, 'inne i events ');
+		await fetch('http://localhost:8080/events/' + id)
+			.then((response) => response.json())
+			.then((events) => {
+				isFetchingEvent = false;
 
-  export let id
-  let isFetchingEvent = true
-  let failedToFetchEvent = false
-  var event = null
+				//Assigning event events[0] because GET/events should always return only one object.
+				event = events[0];
 
-  function loadEvent() {
-    console.log(id, "inne i events ")
-    fetch('http://localhost:8080/events/'+id)
-        .then(response => response.json())
-        .then(events => {
-          isFetchingEvent=false
-          console.log(events, "denna röven")
+				if (events.length > 1) {
+					errors.push('To many objects retrieved');
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				errors.push(error);
+			});
+	}
 
-          event = events
-                //console.log(Buffer.from(events[1].eventImage, 'base64'))
-        })
-        .catch(error => console.log("error"));
-        failedToFetchEvent=true
-}
-/*
-  async function loadEvent(){
-      try {
-          const response = fetch("http://localhost:8080/events/"+id)
-          switch((await response).status){
-              case 200:
-                  event = await (await response).json
-                  break
-          }
+	function loadComments() {
+		fetch('http://localhost:8080/events/' + id + '/comments')
+			.then((response) => response.json())
+			.then((data) => {
+				comments = data;
+			})
+			.catch((error) => {
+				console.log(error);
+				errors.push(error, 'Caught in fetch comments');
+			});
+	}
 
-      }catch(error){
-          failedToFetchEvent =true
-      }
-  }  
-  */ 
-  loadEvent()
+	let commentAuthor = '';
+	let commentBody = '';
 
+	async function createComment() {
+		const comment = {
+			commentAuthor,
+			commentBody,
+		};
+		try {
+			const response = await fetch('http://localhost:8080/events/' + id + '/create-comment', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(comment),
+			});
+		} catch (error) {
+			errors.push(error);
+		}
+	}
 
-</script>
-
-<h1>Event</h1>
-{#if isFetchingEvent}
-  <p>Wait i'm fetching data...</p>
-{:else if isFetchingEvent == false}
-  {#each event as events}
-  <div>
-    <p>
-    id : {events.eventID}
-    </p> 
-  </div>
-  <div>
-    <p>
-      event name : {events.eventTitle}
-    </p>
-  </div>
-  <div>
-    <p>
-      time : {events.eventDate}
-    </p> 
-  </div>
-  <div>
-    <p>
-      Description : {events.eventDescription}
-    </p>
-  </div>
-  {/each}
-
-{:else}
-  <p>No event with that id</p>
-{/if}
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <script>
-  import { events } from './data.js'
-
-
-
-  let eventDescription = ""
-  /*events.forEach((item)=>{
-    if(){
-      eventDescription = item.eventDescription
-    }
-  })*/
+	loadEvent();
+	loadComments();
 </script>
 
 <div>
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				<h1 id="text-color">Event</h1>
+	{#if errors.length}
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<h1 id="text-color">ERRORS</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<hr id="header-underline" />
+				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col">
-        <hr id="header-underline" />
-      </div>
+		{#each errors as error}
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div>
+							{error}
+						</div>
+					</div>
+				</div>
+			</div>
+		{/each}
+	{:else if isFetchingEvent}
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<h1 id="text-color">Data still loading...</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<hr id="header-underline" />
+				</div>
+			</div>
 		</div>
-	</div>
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <div>
-          {eventDescription}
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
+	{:else}
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<h1 id="text-color">{event.eventTitle}</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<hr id="header-underline" />
+				</div>
+			</div>
+		</div>
+		<div class="container" id="text-color">
+			<div class="row">
+				<div class="col">
+					<div>
+						{event.eventTitle} by {event.eventOrganizer}:
+					</div>
+					<div>
+						{event.eventDescription}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" id="pad-top-2">
+					<div>Time of event:</div>
+					<div>
+						{event.eventDate}
+					</div>
+					<div>
+						{event.eventTime}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col" id="pad-top-10">
+					<h3 id="text-color">Comments</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<hr id="header-underline" />
+				</div>
+			</div>
+		</div>
+		{#if comments.length}
+			{#each comments as item}
+				<div class="container">
+					<div class="row">
+						<div class="col " id="comment-text">
+							<div id="pad-top-1">
+								{item.commentAuthor}:
+							</div>
+							<div>
+								{item.commentBody}
+							</div>
+						</div>
+					</div>
+				</div>
+			{/each}
+		{:else}
+			<div class="container">
+				<div class="row">
+					<div class="col" id="comment-text">
+						<div>This event has not received any comments</div>
+					</div>
+				</div>
+			</div>	
+		{/if}
+		<form on:submit|preventDefault={createComment}>
+			<div class="row justify-content-md-center">
+				<div class="col-md-auto" id="comment-text">Leave a comment:</div>
+			</div>
+			<div class="row justify-content-md-center">
+				<div class="col-md-auto">
+					<input type="text" placeholder="Author:" bind:value={commentAuthor} />
+				</div>
+			</div>
+			<div class="row justify-content-md-center">
+				<div class="col-md-auto">
+					<input type="text" placeholder="Comment:" bind:value={commentBody} />
+				</div>
+			</div>
+			<div class="row justify-content-md-center">
+				<div class="col-md-auto">
+					<input class="btn btn-primary" id="login-button" type="submit" value="Create" />
+				</div>
+			</div>
+		</form>
+	{/if}
+</div>
