@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { response } from 'express'
 import jwt from 'jsonwebtoken'
 import { createPool } from 'mariadb'
 import multer from 'multer'
@@ -78,7 +78,7 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
 
 app.get("/events/:id", async function (request, response) {
   const eventID = request.params.id;
-  console.log(eventID, "i backend")
+  console.log("Recieved GET/events", eventID)
   const connection = await pool.getConnection();
   try {
 
@@ -87,6 +87,8 @@ app.get("/events/:id", async function (request, response) {
 
     for (const event of events) {
       event.eventImage = event.eventImage.toString("utf8");
+      event.eventTime = event.eventDate.toISOString().substring(11,16)
+      event.eventDate = event.eventDate.toISOString().substring(0, 10)
     }
 
     response.status(200).json(events);
@@ -97,6 +99,24 @@ app.get("/events/:id", async function (request, response) {
     connection.release()
   }
 });
+
+app.get("/events/:id/comments", async function (request, response) {
+  const eventID = request.params.id
+  console.log("Received GET /events/", eventID, "/comments")
+
+  const connection = await pool.getConnection()
+  try{
+    const query = "SELECT * FROM comments WHERE commentEventID = ?"
+    const comments = await connection.query(query, [eventID])
+    console.log("Sending 200")
+    response.status(200).json(comments)
+  } catch(error) {
+    console.log("Sending 500")
+    response.status(500).end();
+  } finally {
+    connection.release()
+  }
+})
 
 
 
@@ -184,7 +204,7 @@ app.post("/tokens", async function (request, response) {
         response.status(400).json({ error: "invalid_grant" })
       }
     })
-    
+
   } catch (error) {
     console.log(error, "Sending 500")
     response.status(500).end()
@@ -205,7 +225,7 @@ app.post("/createAccount", async function (request, response) {
     const hashedPassword = await bcrypt.hash(account.password, saltRounds)
     connection.query(query, [account.username, hashedPassword])
     console.log(account.username + ' created')
-
+    response.status(200).end()
   } catch (error) {
     console.log(error)
     response.status(500).end()
@@ -213,6 +233,25 @@ app.post("/createAccount", async function (request, response) {
     connection.release()
   }
 })
+
+app.post("/events/:id/create-comment", async function (request, response){
+  const eventID = request.params.id
+  console.log("Received POST/events/", eventID, "/create-comment")
+
+  const comment = request.body
+  const connection = await pool.getConnection()
+  try{
+    const query = 'INSERT INTO comments (commentAuthor, commentBody, commentEventID) VALUES (?, ?, ?)'
+    connection.query(query, [comment.commentAuthor, comment.commentBody, eventID])
+    response.status(200).end()
+  } catch(error){
+    console.log(error)
+    response.status(500).end()
+  } finally {
+    connection.release()
+  }
+})
+
 
 
 app.listen(8080, () => {

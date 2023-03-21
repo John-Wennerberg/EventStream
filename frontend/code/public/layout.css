@@ -92,6 +92,10 @@ button.margin-top{
   color: #99DDDD;
 }
 
+#comment-text{
+  color: #99DDDD;
+  opacity: 50%;
+}
 #test-border{
   border: 6px solid red;
 }
