@@ -12,12 +12,16 @@ CREATE TABLE events (
 CREATE TABLE accounts (
   accountID INT PRIMARY KEY AUTO_INCREMENT,
   accountUsername VARCHAR(50),
-  accountHash VARCHAR(255)
+  accountHash VARCHAR(1024) CHARACTER SET utf8
 );
 
-INSERT INTO accounts(accountUsername, accountHash) VALUES
-("John", ""),
-("Affe", "");
+CREATE TABLE comments (
+  commentID INT PRIMARY KEY AUTO_INCREMENT,
+  commentAuthor VARCHAR(50),
+  commentBody VARCHAR(255),
+  commentEventID INT,
+  FOREIGN KEY(commentEventID) REFERENCES events(eventID)
+);
 
  INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventOrganizer, eventTicketLimit, eventDescription, eventImage ) VALUES 
  ("Festival 1", "2023-01-31", "2023-01-30 16:00:00", "John",  4, "Eddie Meduzas Greatest Hits", "./public/image/event-image.jpg"),
@@ -27,5 +31,6 @@ INSERT INTO accounts(accountUsername, accountHash) VALUES
  ("Festival 5", "2023-03-31", "2023-03-30 16:00:00", "John",  4, "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta tenetur cum saepe?", "./public/image/event-image.jpg"),
  ("Festival 6", "2023-03-31", "2023-03-30 16:00:00", "John",  4, "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta tenetur cum saepe?", "./public/image/event-image.jpg");
 
-
-
+INSERT INTO comments(commentAuthor, commentBody, commentEventID) VALUES
+("John", "This event was amazing", 4),
+("User", "This event sucked man!!!!!!!", 4);

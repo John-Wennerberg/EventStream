@@ -79,8 +79,9 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
 app.get("/events/:id", async function (request, response) {
   const eventID = request.params.id;
   console.log(eventID, "i backend")
+  const connection = await pool.getConnection();
   try {
-    const connection = await pool.getConnection();
+
     const query = "SELECT * FROM events WHERE eventID = ?";
     const events = await connection.query(query, [eventID]);
 
@@ -92,6 +93,8 @@ app.get("/events/:id", async function (request, response) {
   } catch (error) {
     console.log(error);
     response.status(500).end();
+  } finally {
+    connection.release()
   }
 });
 
@@ -99,8 +102,10 @@ app.get("/events/:id", async function (request, response) {
 
 app.get("/events", async function (request, response) {
   console.log("Hello?!")
+  const connection = await pool.getConnection()
+
   try {
-    const connection = await pool.getConnection()
+
     const query = "SELECT * FROM events"
 
     const events = await connection.query(query)
@@ -114,14 +119,16 @@ app.get("/events", async function (request, response) {
   } catch (error) {
     console.log(error)
     response.status(500).end()
+  } finally {
+    connection.release()
   }
 })
 
 app.get("/", async function (request, response) {
   console.log("Received GET /")
-
+  const connection = await pool.getConnection()
   try {
-    const connection = await pool.getConnection()
+
     const query = "SELECT * FROM events"
 
     const events = await connection.query(query)
@@ -131,6 +138,8 @@ app.get("/", async function (request, response) {
   } catch (error) {
     console.log(error)
     response.status(500).end()
+  } finally {
+    connection.release()
   }
 })
 
@@ -141,56 +150,67 @@ app.post("/tokens", async function (request, response) {
   const password = request.body.password
   const username = request.body.username
 
+
   if (grantType != "password") {
+    console.log("Unsuported Grant Type")
     response.status(400).json({ error: "unsupported_grant_type " })
     return
   }
-  console.log("Retrieving Hash from DB")
+  const connection = await pool.getConnection()
   try {
-    const connection = await pool.getConnection()
-    const query = 'SELECT accountHash FROM accounts WHERE accountUsername = ?'
-    const accountHash = await connection.query(query, [username]);
-
-    bcrypt.compare(password, toString(accountHash)).then(function (result) {
+    const query = 'SELECT * FROM accounts WHERE accountUsername = ?'
+    const account = await connection.query(query, [username]);
+    bcrypt.compare(password, account[0].accountHash).then(function (result) {
+      console.log(result)
       if (result) {
         const payload = {
           isLoggedIn: true
         }
+        console.log(payload[0])
         jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
           if (err) {
+            console.log(err, "sending 500")
             response.status(500).end()
           } else {
+            console.log("sending 200")
             response.status(200).json({
               access_token: token,
-              type: "bearer" //might be type not token_type
+              type: "bearer"
             })
           }
         })
       } else {
-        response.status(400).json({error: "invalid_grant"})
+        console.log("sending 400")
+        response.status(400).json({ error: "invalid_grant" })
       }
     })
+    
   } catch (error) {
-    console.log(error)
+    console.log(error, "Sending 500")
     response.status(500).end()
+  } finally {
+    console.log("Closing connection")
+    connection.release()
   }
 })
 
-app.post("/createAccount", async function(request, response){
+app.post("/createAccount", async function (request, response) {
   console.log("Received POST /createAccount")
 
   const account = request.body
-  console.log(account[0])
-  try{
-    const connection = await pool.getConnection()
+  const connection = await pool.getConnection()
+  try {
     const query = 'INSERT INTO accounts (accountUsername, accountHash) VALUES (? , ?)'
+    console.log("Hashing:", account.password)
     const hashedPassword = await bcrypt.hash(account.password, saltRounds)
-      connection.query(query, [account.username,hashedPassword])
-      console.log(account.username + ' created')
-  
+    connection.query(query, [account.username, hashedPassword])
+    console.log(account.username + ' created')
+
   } catch (error) {
     console.log(error)
     response.status(500).end()
+  } finally {
+    connection.release()
   }
 })
 
