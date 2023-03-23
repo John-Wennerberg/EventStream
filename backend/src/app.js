@@ -153,11 +153,6 @@ app.get("/", async function (request, response) {
 
     const events = await connection.query(query)
 
-    for (const event of events) {
-      event.eventImage = event.eventImage.toString('utf8')
-    }
-
-
     response.status(200).json(events)
 
   } catch (error) {
@@ -168,7 +163,7 @@ app.get("/", async function (request, response) {
   }
 })
 
-app.post("/tokens", async function (request, response) {
+app.post("/tokens" , async function (request, response) {
   console.log("Received POST /tokens")
 
   const grantType = request.body.grant_type

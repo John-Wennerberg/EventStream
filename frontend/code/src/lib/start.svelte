@@ -3,7 +3,7 @@
 	import { paginate, DarkPaginationNav } from 'svelte-paginate';
 
 	let currentPage = 1;
-	let pageSize = 9;
+	let pageSize = 7;
 	let events = [];
 
 	function fetchEvents() {
@@ -105,7 +105,7 @@
 		<div class="row row-cols-3 justify-content-md-center">
 			<!-- {#each paginatedItems as event} -->
 			{#each paginatedItems as event}
-				<Router>
+				<!-- <Router> -->
 					{#if event.eventDate > formattedDate && showCurrentEvents}
 						<div class="container">
 							<div class="row justify-content-md-center">
@@ -113,13 +113,13 @@
 									<!-- <Link to="/event/{event.id}"> -->
 										<Link to={`/event/${event.eventID}`}>
 										<div class="row justify-content-md-center">
-											{#if event.eventImage.length >1 }
-												<!-- <img src="event-image.jpg" alt="Event" />  -->
-												<img src="{'data:image/jpg;base64,'+ (event.eventImage)}"  alt=""/>
-												<!-- HÄR ÄR BILD JÄVELN -->
-											{:else }
-												<img src="efrontend/code/public/event-image.jpg" alt="Event" />
-											{/if}
+											<div class="row justify-content-md-center">
+												{#if event.eventImage.length > 1}
+													<img src="{'data:image/jpg;base64,'+ (event.eventImage)}"  alt=""/>
+												{:else }
+													<img src="event-image.jpg" alt="Event" />
+												{/if}
+											</div>
 										</div>
 										<div class="row justify-content-md-center" id="undo-link">
 											{event.eventTitle}
@@ -151,20 +151,21 @@
 							</div>
 						</div>
 					{/if}
-				</Router>
+				<!-- </Router> -->
+
 			{/each}
 		</div>
 	</div>
 </div>
 
 
-<!-- <footer id="footer">
+<footer id="footer">
 	<DarkPaginationNav
-		totalItems={items.length}
+		totalItems={events.length}
 		{pageSize}
 		{currentPage}
 		limit={1}
 		showStepOptions={true}
 		on:setPage={(e) => (currentPage = e.detail.page)}
 	/>
-</footer> -->
+</footer>

@@ -25,6 +25,7 @@
 						isLoggedIn: true,
 						accessToken,
 						username: username,
+						
 					};
 				case 400:
 					errors.push(await response.json())
