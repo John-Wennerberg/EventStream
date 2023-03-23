@@ -113,10 +113,13 @@
 									<!-- <Link to="/event/{event.id}"> -->
 										<Link to={`/event/${event.eventID}`}>
 										<div class="row justify-content-md-center">
-											<!-- <img src="event-image.jpg" alt="Event" />  -->
-											<img src="{'data:image/jpg;base64,'+ (event.eventImage)}"  alt=""/>
-											<img src="{'data:image/png;base64,'+ (event.eventImage)}"  alt=""/>
-											<!-- HÄR ÄR BILD JÄVELN -->
+											{#if event.eventImage.length >1 }
+												<!-- <img src="event-image.jpg" alt="Event" />  -->
+												<img src="{'data:image/jpg;base64,'+ (event.eventImage)}"  alt=""/>
+												<!-- HÄR ÄR BILD JÄVELN -->
+											{:else }
+												<img src="efrontend/code/public/event-image.jpg" alt="Event" />
+											{/if}
 										</div>
 										<div class="row justify-content-md-center" id="undo-link">
 											{event.eventTitle}

@@ -195,6 +195,7 @@ app.post("/tokens", async function (request, response) {
         jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
           if (err) {
             console.log(err, "sending 500")
+            console.log("error i backend")
             response.status(500).end()
           } else {
             console.log("sending 200")

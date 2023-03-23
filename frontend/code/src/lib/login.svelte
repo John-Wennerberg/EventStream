@@ -32,6 +32,7 @@
 					errors.push(await response.json())
 				case 500:
 					errors.push("Internal Server Error")
+					console.log("FEL I FRONTEND")
 			}
 		} catch (error) {
 			errors.push(error)
