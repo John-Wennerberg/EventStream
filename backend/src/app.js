@@ -176,7 +176,7 @@ app.post("/tokens", async function (request, response) {
   try {
     const query = 'SELECT * FROM accounts WHERE accountUsername = ?'
     const account = await connection.query(query, [username]);
-    if(account.lenggth == 0 ){
+    if(account.lenggth === 0 ){
       console.log("account not found")
       response.status(400).json({ error : "invalid_grant"});
     } else{
