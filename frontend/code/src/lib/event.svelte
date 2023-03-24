@@ -136,6 +136,14 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col" id="pad-top-2">
+					<div>Tickets:</div>
+					<div>
+						{@html event.eventForms}
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="container">
 			<div class="row">
@@ -171,7 +179,7 @@
 						<div>This event has not received any comments</div>
 					</div>
 				</div>
-			</div>	
+			</div>
 		{/if}
 		<form on:submit|preventDefault={createComment}>
 			<div class="row justify-content-md-center">

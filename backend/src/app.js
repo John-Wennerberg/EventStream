@@ -9,6 +9,14 @@ const saltRounds = 10
 
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
 
+//##########################
+//#####GLOBAL VARIABLES#####
+//##########################
+const EVENT_TITLE_MIN_LENGTH = 5
+const EVENT_TITLE_MAX_LENGTH = 50
+const EVENT_DESCRIPTION_MIN_LENGTH = 15
+const EVENT_DESCRIPTION_MAX_LENGTH = 250
+
 
 const ACCESS_TOKEN_SECRET = "oaipfgauighASHFjagh"
 const pool = createPool({
@@ -54,22 +62,27 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventDescription = request.body.eventDescription
   const eventOrganizer = request.body.eventOrganizer
   const eventImage = request.file.buffer.toString('base64')
+  const eventForms = request.body.eventForms
 
 
   console.log('abc', eventImage)
 
-
+  const errors = validateCreateEvent(eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventForms)
   const connection = await pool.getConnection()
-  try {
-    await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage]);
-    response.status(200).json();
-    console.log("Upload Succesfull")
-  } catch (error) {
-    console.log(error)
-    response.status(500).send('Internal Server Error')
-  } finally {
-    connection.release()
+  if (errors.length == 0) {
+    try {
+      await connection.query('INSERT INTO events (eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage, eventForms) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventOrganizer, eventImage, eventForms]);
+      response.status(200).json();
+      console.log("Upload Succesfull")
+    } catch (error) {
+      console.log(error)
+      response.status(500).send('Internal Server Error')
+    } finally {
+      connection.release()
+    }
+  } else {
+    response.status(400).json(errors)
   }
 
 })
@@ -87,7 +100,7 @@ app.get("/events/:id", async function (request, response) {
 
     for (const event of events) {
       event.eventImage = event.eventImage.toString("utf8");
-      event.eventTime = event.eventDate.toISOString().substring(11,16)
+      event.eventTime = event.eventDate.toISOString().substring(11, 16)
       event.eventDate = event.eventDate.toISOString().substring(0, 10)
     }
 
@@ -105,12 +118,12 @@ app.get("/events/:id/comments", async function (request, response) {
   console.log("Received GET /events/", eventID, "/comments")
 
   const connection = await pool.getConnection()
-  try{
+  try {
     const query = "SELECT * FROM comments WHERE commentEventID = ?"
     const comments = await connection.query(query, [eventID])
     console.log("Sending 200")
     response.status(200).json(comments)
-  } catch(error) {
+  } catch (error) {
     console.log("Sending 500")
     response.status(500).end();
   } finally {
@@ -178,8 +191,8 @@ app.post("/tokens", async function (request, response) {
     const account = await connection.query(query, [username]);
     if(account.lenggth === 0 ){
       console.log("account not found")
-      response.status(400).json({ error : "invalid_grant"});
-    } else{
+      response.status(400).json({ error: "invalid_grant" });
+    } else {
       bcrypt.compare(password, account[0].accountHash).then(function (result) {
         console.log(result)
         if (result) {
@@ -250,17 +263,17 @@ app.post("/createAccount", async function (request, response) {
   }
 })
 
-app.post("/events/:id/create-comment", async function (request, response){
+app.post("/events/:id/create-comment", async function (request, response) {
   const eventID = request.params.id
   console.log("Received POST/events/", eventID, "/create-comment")
 
   const comment = request.body
   const connection = await pool.getConnection()
-  try{
+  try {
     const query = 'INSERT INTO comments (commentAuthor, commentBody, commentEventID) VALUES (?, ?, ?)'
     connection.query(query, [comment.commentAuthor, comment.commentBody, eventID])
     response.status(200).end()
-  } catch(error){
+  } catch (error) {
     console.log(error)
     response.status(500).end()
   } finally {
@@ -275,5 +288,41 @@ app.listen(8080, () => {
 })
 
 
+function validateCreateEvent(eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventForms) {
+  const errors = []
+
+
+  if (eventTitle < EVENT_TITLE_MIN_LENGTH) {
+    errors.push('Title must contain a minimum of ' + EVENT_TITLE_MIN_LENGTH + ' characters')
+  } else if (eventTitle > EVENT_TITLL_MAX_LENGTH) {
+    errors.push('Title can not contain more than ' + EVENT_TITLE_MAX_LENGTH + ' characters')
+  }
+  const today = generateFormatedDate()
+  if (eventDate < today) {
+    errors.push('Event date must be in the future')
+  }
+  if (eventSalesDate > eventDate) {
+    errors.push('Ticket sales date must be before event date')
+  }
+  if (eventTicketLimit < 1) {
+    errors.push('There must be tickets for sale')
+  }
+  if (eventDescription < EVENT_DESCRIPTION_MIN_LENGTH) {
+    errors.push('Event description must contain a minimum of ' + EVENT_DESCRIPTION_MIN_LENGTH + ' characters')
+  } else if (eventDescription > EVENT_DESCRIPTION_MAX_LENGTH) {
+    errors.push('Event description can not contain more than ' + EVENT_DESCRIPTION_MAX_LENGTH + ' characters')
+  }
+
+  //NEED TO VALIDATE EVENT FORMS FOR BAD HTML
+
+  return errors
+}
+
+function generateFormatedDate() {
+  let currentDate = new Date();
+  return currentDate.toLocaleString('default', { year: 'numeric' }) + '-'
+    + currentDate.toLocaleString('default', { month: '2-digit' }) + '-'
+    + currentDate.toLocaleString('default', { day: '2-digit' })
+}
 
 
