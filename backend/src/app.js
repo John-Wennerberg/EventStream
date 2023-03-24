@@ -148,13 +148,9 @@ app.get("/", async function (request, response) {
   console.log("Received GET /")
   const connection = await pool.getConnection()
   try {
-
     const query = "SELECT * FROM events"
-
     const events = await connection.query(query)
-
     response.status(200).json(events)
-
   } catch (error) {
     console.log(error)
     response.status(500).end()
@@ -180,30 +176,38 @@ app.post("/tokens", async function (request, response) {
   try {
     const query = 'SELECT * FROM accounts WHERE accountUsername = ?'
     const account = await connection.query(query, [username]);
-    bcrypt.compare(password, account[0].accountHash).then(function (result) {
-      console.log(result)
-      if (result) {
-        const payload = {
-          isLoggedIn: true
-        }
-        console.log(payload[0])
-        jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
-          if (err) {
-            console.log(err, "sending 500")
-            response.status(500).end()
-          } else {
-            console.log("sending 200")
-            response.status(200).json({
-              access_token: token,
-              type: "bearer"
-            })
+    console.log("Account:", account);
+    console.log("Account length:", account.length);
+    if(account.lenggth === 0 ){
+      console.log("account not found")
+      response.status(400).json({ error : "invalid_grant"});
+    } else{
+      bcrypt.compare(password, account[0].accountHash).then(function (result) {
+        console.log(result)
+        if (result) {
+          const payload = {
+            isLoggedIn: true
           }
-        })
-      } else {
-        console.log("sending 400")
-        response.status(400).json({ error: "invalid_grant" })
-      }
-    })
+          console.log(payload[0])
+          jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
+            if (err) {
+              console.log(err, "sending 500")
+              console.log("error i backend")
+              response.status(500).end()
+            } else {
+              console.log("sending 200")
+              response.status(200).json({
+                access_token: token,
+                type: "bearer"
+              })
+            }
+          })
+        } else {
+          console.log("sending 400")
+          response.status(400).json({ error: "invalid_grant" })
+        }
+      })
+    }
 
   } catch (error) {
     console.log(error, "Sending 500")

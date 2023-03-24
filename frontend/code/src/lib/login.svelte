@@ -25,6 +25,7 @@
 						isLoggedIn: true,
 						accessToken,
 						username: username,
+						
 					};
 				case 400:
 					errors.push(await response.json())
@@ -32,6 +33,7 @@
 					errors.push(await response.json())
 				case 500:
 					errors.push("Internal Server Error")
+					console.log("FEL I FRONTEND")
 			}
 		} catch (error) {
 			errors.push(error)
