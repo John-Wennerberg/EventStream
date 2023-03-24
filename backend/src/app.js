@@ -189,9 +189,7 @@ app.post("/tokens", async function (request, response) {
   try {
     const query = 'SELECT * FROM accounts WHERE accountUsername = ?'
     const account = await connection.query(query, [username]);
-    console.log("Account:", account);
-    console.log("Account length:", account.length);
-    if (account.lenggth === 0) {
+    if(account.lenggth === 0 ){
       console.log("account not found")
       response.status(400).json({ error: "invalid_grant" });
     } else {
@@ -236,13 +234,27 @@ app.post("/createAccount", async function (request, response) {
 
   const account = request.body
   const connection = await pool.getConnection()
+  
   try {
+    const checkIfUserExistQuery = 'SELECT * FROM accounts WHERE accountUsername = ?'
+    console.log(account)
+    console.log("användarnamn här över ")
+    const rows = await connection.query(checkIfUserExistQuery, [account.username])
+    console.log("Result of username check:", rows)
+    if(rows.length > 0){
+      console.log(account)
+      console.log("Username alredy exists")
+      response.status(409).send('Username alredy exists')
+      return
+    }else {
+    console.log(account)
     const query = 'INSERT INTO accounts (accountUsername, accountHash) VALUES (? , ?)'
     console.log("Hashing:", account.password)
     const hashedPassword = await bcrypt.hash(account.password, saltRounds)
     connection.query(query, [account.username, hashedPassword])
     console.log(account.username + ' created')
     response.status(200).end()
+    }
   } catch (error) {
     console.log(error)
     response.status(500).end()
