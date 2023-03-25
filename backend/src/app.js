@@ -189,9 +189,9 @@ app.post("/tokens", async function (request, response) {
   try {
     const query = 'SELECT * FROM accounts WHERE accountUsername = ?'
     const account = await connection.query(query, [username]);
-    if(account.lenggth === 0 ){
+    if(account.length === 0 ){
       console.log("account not found")
-      response.status(400).json({ error: "invalid_grant" });
+      response.status(401).json({ error: "invalid_grant" });
     } else {
       bcrypt.compare(password, account[0].accountHash).then(function (result) {
         console.log(result)
@@ -219,7 +219,6 @@ app.post("/tokens", async function (request, response) {
         }
       })
     }
-
   } catch (error) {
     console.log(error, "Sending 500")
     response.status(500).end()
