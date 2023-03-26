@@ -1,32 +1,37 @@
 	<script>
 		import { Router, Link, Route, navigate } from 'svelte-routing';
 		import { user } from '../user-store.js';
+		import { tick } from 'svelte';
 
 		let username = '';
 		let password = '';
+		let inccorectUsernameOrPassword = false
 
 		const errors = []
 
-		function validateInputs() {
-			let isValid = true;
-
-			if (!username || username.trim() === '') {
-				errors.push('Username cannot be empty.');
-				isValid = false;
+		$: {
+			if (errors.length > 0){
+				console.log("Errors updated:", errors)
 			}
+		}
 
-			if (!password || password.trim() === '') {
-				errors.push('Password cannot be empty.');
-				isValid = false;
-			}
 
-			return isValid;
-			}
 		async function login() {
 			errors.length = 0;
-			if (!validateInputs()) {
-				return;
+			
+			if (!username || username.trim() === '') {
+				errors.push('Username cannot be empty.');
+				return
 			}
+			if (!password || password.trim() === '') {
+				errors.push('Password cannot be empty.');
+				return
+			}
+			if(inccorectUsernameOrPassword === true){
+				errors.push("Wrong Username or password")
+				return
+			}
+			
 			try {
 				const response = await fetch('http://localhost:8080/tokens', {
 					method: 'POST',
@@ -50,18 +55,19 @@
 						navigate("/");
 						break;
 					case 400:
-						errors.push( body.error/*await response.json()*/)
+						errors.push("Incorreect username or password");
 						break;
 					case 401:
-						errors.push( body.error/*"Incorrect username or password"*/)
+						errors.push("Incorrect username or password");
+						inccorectUsernameOrPassword = true;
 						break;
 					case 500:
-						errors.push("Internal Server Error")
-						console.log("FEL I FRONTEND")
+						errors.push(body.error); /*"Internal Server Error");*/
 						break;
 				}
 			} catch (error) {
 				errors.push(error)
+				await tick();
 			}
 		}
 	</script>
@@ -113,7 +119,7 @@
 				<div class="col-md-auto">
 					<ul class="error-list">
 						{#each errors as error}
-							<li>{error}</li>
+							<p>{error}</p>
 						{/each}
 					</ul>
 				</div>
