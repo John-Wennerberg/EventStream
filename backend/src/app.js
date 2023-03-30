@@ -6,6 +6,7 @@ import path from 'path'
 
 import bcrypt from 'bcrypt'
 import { userInfo } from 'os'
+import { request } from 'http'
 const saltRounds = 10
 
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
@@ -264,16 +265,17 @@ app.post("/createAccount", async function (request, response) {
   }
 })
 
-app.post("/events/:id/create-comment", async function (request, response) {
+app.post("/events/:id/create-comment", authenticateToken , async function (request, response) {
   const eventID = request.params.id
+  const userId = request.user.id
   console.log("Received POST/events/", eventID, "/create-comment", username )
 
   const comment = request.body
   const connection = await pool.getConnection()
   
   try {
-    const query = 'INSERT INTO comments (commentAuthor, commentBody, commentEventID) VALUES (?, ?, ?)'
-    connection.query(query, [comment.commentAuthor, comment.commentBody, eventID])
+    const query = 'INSERT INTO comments (commentAuthor, commentBody, commentEventID, userID) VALUES (?, ?, ?, ?)'
+    connection.query(query, [comment.commentAuthor, comment.commentBody, eventID, userId])
     response.status(200).end()
   } catch (error) {
     console.log(error)
@@ -352,3 +354,16 @@ function generateFormatedDate() {
 }
 
 
+
+function authenticateToken(requset, response, next) {
+  const authHeader = request.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == null) return response.sendStatus(401); // Unauthorized
+
+  jwt.verify(token, ACCESS_TOKEN_SECRET, (error, user) => {
+    if (error) return response.sendStatus(403); // Forbidden
+    request.user = user;
+    next();
+  });
+}

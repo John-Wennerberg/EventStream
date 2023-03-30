@@ -4,5 +4,4 @@ export const user = writable({
   isLoggedIn: false,
   accessToken: "",
   username: "",
-  //userId: ""
 })

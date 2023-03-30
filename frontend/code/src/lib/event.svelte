@@ -51,10 +51,14 @@
 			commentBody,
 		};
 		try {
+			console.log("Access Token:", $user.accessToken);
+			console.log("Access Token:", $user.username);
+			console.log("ÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖÄÖ")
 			const response = await fetch('http://localhost:8080/events/' + id + '/create-comment', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + $user.accessToken,
 				},
 				body: JSON.stringify(comment),
 			});
@@ -111,8 +115,6 @@ async function updateComment(commentId) {
 		errors.push(error);
 	}
 	}
-
-
 	loadEvent();
 	loadComments();
 	onMount(() => {

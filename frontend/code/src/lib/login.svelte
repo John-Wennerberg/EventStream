@@ -51,7 +51,6 @@
 							isLoggedIn: true,
 							accessToken,
 							username: username
-							
 						};
 						navigate("/");
 						break;
