@@ -2,6 +2,7 @@
 		import { Router, Link, Route, navigate } from 'svelte-routing';
 		import { user } from '../user-store.js';
 		import { tick } from 'svelte';
+    import { accounts } from './data.js';
 
 		let username = '';
 		let password = '';
@@ -49,7 +50,7 @@
 						$user = {
 							isLoggedIn: true,
 							accessToken,
-							username: username,
+							username: username
 							
 						};
 						navigate("/");

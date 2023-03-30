@@ -1,10 +1,13 @@
 <script>
 	import { user } from '../user-store.js';
+	import { onMount } from 'svelte';
 	export let id;
 	let isFetchingEvent = true;
 	var event = null;
 	var comments = [];
 	const errors = [];
+	
+	
 
 	async function loadEvent() {
 		console.log(id, 'inne i events ');
@@ -40,8 +43,9 @@
 
 	let commentAuthor = '';
 	let commentBody = '';
-
+	
 	async function createComment() {
+		commentAuthor = $user.username
 		const comment = {
 			commentAuthor,
 			commentBody,
@@ -54,13 +58,69 @@
 				},
 				body: JSON.stringify(comment),
 			});
+			commentBody = "";
+			loadComments();
 		} catch (error) {
 			errors.push(error);
 		}
 	}
+	async function deleteComment(commentId) {
+	try {
+		const response = await fetch('http://localhost:8080/events/' + id + '/comments/' + commentId, {
+		method: 'DELETE',
+		});
+		if (response.ok) {
+		// Reload comments after successful deletion
+		loadComments();
+		} else {
+		errors.push('Failed to delete comment');
+		}
+	} catch (error) {
+		errors.push(error);
+	}
+	}
+
+async function updateComment(commentId) {
+	// Prompt the user for the updated comment body
+	const updatedBody = prompt('Enter the updated comment:');
+	if (updatedBody === null || updatedBody.trim() === '') {
+		// Do not update if the user cancels the prompt or enters an empty comment
+		return;
+	}
+
+	const updatedComment = {
+		commentAuthor: $user.username,
+		commentBody: updatedBody,
+	};
+
+	try {
+		const response = await fetch('http://localhost:8080/events/' + id + '/comments/' + commentId, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(updatedComment),
+		});
+		if (response.ok) {
+		// Reload comments after successful update
+		loadComments();
+		} else {
+		errors.push('Failed to update comment');
+		}
+	} catch (error) {
+		errors.push(error);
+	}
+	}
+
 
 	loadEvent();
 	loadComments();
+	onMount(() => {
+	if ($user.isLoggedIn) {
+		commentAuthor = $user.username;
+	}
+	});
+
 </script>
 
 <div>
@@ -168,6 +228,10 @@
 							<div>
 								{item.commentBody}
 							</div>
+							{#if $user.isLoggedIn && $user.username === item.commentAuthor}
+								<button on:click={() => updateComment(item.id)}>Update</button>
+								<button on:click={() => deleteComment(item.id)}>Delete</button>
+							{/if}
 						</div>
 					</div>
 				</div>
@@ -181,14 +245,14 @@
 				</div>
 			</div>
 		{/if}
+		{#if $user.isLoggedIn}
 		<form on:submit|preventDefault={createComment}>
 			<div class="row justify-content-md-center">
 				<div class="col-md-auto" id="comment-text">Leave a comment:</div>
 			</div>
 			<div class="row justify-content-md-center">
 				<div class="col-md-auto">
-					<input type="text" placeholder="Author:" bind:value={commentAuthor} />
-				</div>
+					<div>Author: {$user.username}</div>
 			</div>
 			<div class="row justify-content-md-center">
 				<div class="col-md-auto">
@@ -201,5 +265,6 @@
 				</div>
 			</div>
 		</form>
+		{/if}
 	{/if}
 </div>

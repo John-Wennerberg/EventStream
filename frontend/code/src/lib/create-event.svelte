@@ -26,7 +26,7 @@
 		data.append('eventImage', file);
 		data.append('eventForms', eventForms);
 		try {
-			const response = await fetch('http://127.0.0.1:8080/create-event', {
+			const response = await fetch('http://localhost:8080/create-event', {
 				method: 'POST',
 				body: data,
 			});

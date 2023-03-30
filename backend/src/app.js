@@ -5,6 +5,7 @@ import multer from 'multer'
 import path from 'path'
 
 import bcrypt from 'bcrypt'
+import { userInfo } from 'os'
 const saltRounds = 10
 
 //import { events } from "/webdevadv-project/frontend/src/lib/data.js"
@@ -197,7 +198,8 @@ app.post("/tokens", async function (request, response) {
         console.log(result)
         if (result) {
           const payload = {
-            isLoggedIn: true
+            isLoggedIn: true,
+            userId: account[0].accountID
           }
           console.log(payload[0])
           jwt.sign(payload, ACCESS_TOKEN_SECRET, function (err, token) {
@@ -264,10 +266,11 @@ app.post("/createAccount", async function (request, response) {
 
 app.post("/events/:id/create-comment", async function (request, response) {
   const eventID = request.params.id
-  console.log("Received POST/events/", eventID, "/create-comment")
+  console.log("Received POST/events/", eventID, "/create-comment", username )
 
   const comment = request.body
   const connection = await pool.getConnection()
+  
   try {
     const query = 'INSERT INTO comments (commentAuthor, commentBody, commentEventID) VALUES (?, ?, ?)'
     connection.query(query, [comment.commentAuthor, comment.commentBody, eventID])
@@ -280,6 +283,30 @@ app.post("/events/:id/create-comment", async function (request, response) {
   }
 })
 
+
+/*
+app.put("/events/:id/create-comment", async function (request, response) {
+  const eventID = request.params.id
+  console.log("Received PUT/events/", eventID, "/create-comment", username )
+
+  const comment = request.body
+  const connection = await pool.getConnection()
+  
+  try {
+    const query = 'UPDATE comments SET commentBody = ? where commentAuthor= ? (commentAuthor, commentBody, commentEventID) VALUES (?, ?, ?)'
+    connection.query(query, [comment.commentAuthor, comment.commentBody, eventID])
+    response.status(200).end()
+  } catch (error) {
+    console.log(error)
+    response.status(500).end()
+  } finally {
+    connection.release()
+  }
+})
+*/
+
+/* DENNA HÄR ÖVER ÄR UPDATE FOR COMMENTS 
+*/
 
 
 app.listen(8080, () => {
