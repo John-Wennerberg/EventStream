@@ -53,7 +53,20 @@ app.use(function (request, response, next) {
 
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    
+    cb(new Error('Only .jpeg, .jpg, .png, .gif format allowed'));
+  },
+});
 
 
 app.post('/create-event', upload.single('eventImage'), async function (request, response) {

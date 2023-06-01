@@ -75,7 +75,7 @@
     <div class="row justify-content-md-center">
       <div id="text-color" class="col col-lg-2">Description:</div>
         <div class="col col-lg-2">
-          <textarea name="description" id="" placeholder="Description:" bind:value={eventDescription} cols="20" rows="10"></textarea>
+          <textarea name="description" id="" placeholder="Description:" bind:value={eventDescription} cols="10" rows="10"></textarea>
         </div>
     </div>
 		<div class="row justify-content-md-center">

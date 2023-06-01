@@ -5,8 +5,7 @@ WORKDIR /backend
 COPY ./package*.json ./
 
 RUN npm install
-RUN npm install -g nodemon
 
 COPY ./src/ ./
 
-CMD nodemon ./app.js
+CMD node --watch ./src/app.js

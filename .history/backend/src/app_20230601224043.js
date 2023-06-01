@@ -53,7 +53,20 @@ app.use(function (request, response, next) {
 
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    
+    cb(new Error('Only .jpeg, .jpg, .png, .gif format allowed'));
+  },
+});
 
 
 app.post('/create-event', upload.single('eventImage'), async function (request, response) {
@@ -65,10 +78,15 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventOrganizer = request.body.eventOrganizer
   const eventImage = request.file.buffer.toString('base64')
   const eventForms = request.body.eventForms
-
-
-  console.log('abc', eventImage)
-
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
+  console.log('#########################################################')
   const errors = validateCreateEvent(eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventForms)
   const connection = await pool.getConnection()
   if (errors.length == 0) {
@@ -86,7 +104,6 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   } else {
     response.status(400).json(errors)
   }
-
 })
 
 

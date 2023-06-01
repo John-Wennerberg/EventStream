@@ -46,7 +46,7 @@
 				setTimeout(()=> {
 					showMessage = true;
 					window.location.href = "/login";
-				}, 1500);
+				}, 4000);
 			}else if(response.status === 409) {
 				const errorMessage = "Username Alredy Exists"
 				if(errorElement instanceof HTMLElement){
