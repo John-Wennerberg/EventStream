@@ -67,7 +67,7 @@ app.post('/create-event', upload.single('eventImage'), async function (request, 
   const eventForms = request.body.eventForms
 
 
-  console.log('abc', eventImage)
+  //console.log('abc', eventImage)
 
   const errors = validateCreateEvent(eventTitle, eventDate, eventSalesDate, eventTicketLimit, eventDescription, eventForms)
   const connection = await pool.getConnection()
