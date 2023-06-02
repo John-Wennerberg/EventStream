@@ -17,7 +17,6 @@
 	let showErrorOrganizer = false;
 	let showErrorDescription = false;
 	let showSuccessMessage = false;
-	let showErrorDate = false;
 
 	async function getDefaultImage() {
 		const response = await fetch('/event-image.jpg');
@@ -78,32 +77,22 @@
 
 	function validateFields() {
 		showError = false; 
-		showErrorTitle = false;
-		showErrorOrganizer = false;
-		showErrorDescription = false;
-		showErrorDate = false;
-		// skapa ett nytt datum objekt för dagens datum
-		let today = new Date();
-		// ta bort tiden för att endast jämföra datum
-		today.setHours(0, 0, 0, 0);
-		let eventDateWithoutTime = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-		let eventSalesDateWithoutTime = new Date(eventSalesDate.getFullYear(), eventSalesDate.getMonth(), eventSalesDate.getDate());
+	showErrorTitle = false;
+	showErrorOrganizer = false;
+	showErrorDescription = false;
 
-		if (eventTicketLimit < 1) {
-			showError = true;
-		}
-		if (eventTitle.length < 1) {
-			showErrorTitle = true;
-		}
-		if (eventOrganizer.length < 1) {
-			showErrorOrganizer = true;
-		}
-		if (eventDescription.length < 1) {
-			showErrorDescription = true;
-		}
-		if (eventDateWithoutTime <= today || eventSalesDateWithoutTime <= today) {
-			showErrorDate = true;
-		}
+	if (eventTicketLimit < 1) {
+		showError = true;
+	}
+	if (eventTitle.length < 1) {
+		showErrorTitle = true;
+	}
+	if (eventOrganizer.length < 1) {
+		showErrorOrganizer = true;
+	}
+	if (eventDescription.length < 1) {
+		showErrorDescription = true;
+	}
 }
 </script>
 <style>
@@ -184,18 +173,12 @@
 					<div id="text-color" class="col col-lg-2">Event Date:</div>
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventDate} />
-						{#if showErrorDate}
-							<p style="color: red;">Event date must be in the future</p>
-						{/if}
 					</div>
 				</div>
 				<div class="row justify-content-md-center">
 					<div id="text-color" class="col col-lg-2">Ticket Sales Date:</div>
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventSalesDate} />
-						{#if showErrorDate}
-						<p style="color: red;">Sales date must be in the future</p>
-					{/if}
 					</div>
 				</div>
 				<div class="row justify-content-md-center">

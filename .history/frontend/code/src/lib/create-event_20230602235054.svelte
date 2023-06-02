@@ -185,7 +185,7 @@
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventDate} />
 						{#if showErrorDate}
-							<p style="color: red;">Event date must be in the future</p>
+							<p style="color: red;">Event date and sales date must be in the future</p>
 						{/if}
 					</div>
 				</div>
@@ -193,9 +193,6 @@
 					<div id="text-color" class="col col-lg-2">Ticket Sales Date:</div>
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventSalesDate} />
-						{#if showErrorDate}
-						<p style="color: red;">Sales date must be in the future</p>
-					{/if}
 					</div>
 				</div>
 				<div class="row justify-content-md-center">

@@ -86,8 +86,6 @@
 		let today = new Date();
 		// ta bort tiden för att endast jämföra datum
 		today.setHours(0, 0, 0, 0);
-		let eventDateWithoutTime = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-		let eventSalesDateWithoutTime = new Date(eventSalesDate.getFullYear(), eventSalesDate.getMonth(), eventSalesDate.getDate());
 
 		if (eventTicketLimit < 1) {
 			showError = true;
@@ -101,7 +99,7 @@
 		if (eventDescription.length < 1) {
 			showErrorDescription = true;
 		}
-		if (eventDateWithoutTime <= today || eventSalesDateWithoutTime <= today) {
+		if (eventDate.setHours(0, 0, 0, 0) <= today || eventSalesDate.setHours(0, 0, 0, 0) <= today) {
 			showErrorDate = true;
 		}
 }
@@ -185,7 +183,7 @@
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventDate} />
 						{#if showErrorDate}
-							<p style="color: red;">Event date must be in the future</p>
+							<p style="color: red;">Event date and sales date must be in the future</p>
 						{/if}
 					</div>
 				</div>
@@ -193,9 +191,6 @@
 					<div id="text-color" class="col col-lg-2">Ticket Sales Date:</div>
 					<div class="col col-lg-2">
 						<DateInput bind:value={eventSalesDate} />
-						{#if showErrorDate}
-						<p style="color: red;">Sales date must be in the future</p>
-					{/if}
 					</div>
 				</div>
 				<div class="row justify-content-md-center">
