@@ -96,7 +96,13 @@
 }
 </script>
 <style>
+	@keyframes slide {
+		0% { transform: translateX(-100%); }
+		50% { transform: translateX(0); }
+		100% { transform: translateX(100%); }
+	}
 	.IfNotLoggedIn{
+		animation: slide 5s infinite;
 		font-size: x-large;
 		padding: 10rem;
 		color: rgb(255, 68, 0);
@@ -104,6 +110,7 @@
 		justify-content: center;
 	}
 	.SuccessMessage{
+		animation: slide 5s infinite;
 		font-size: x-large;
 		padding: 10rem;
 		color: rgb(12, 237, 0);
