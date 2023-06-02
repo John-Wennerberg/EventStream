@@ -8,11 +8,7 @@
 	let eventDescription = '';
 	let eventOrganizer = 'HEJHEJ';
 	let eventForms = '';
-	async function getDefaultImage() {
-		const response = await fetch('/event-image.jpg');
-		const data = await response.blob();
-		return new File([data], 'default-image.jpg')
-  }
+
 
 	async function handleFileUpload(event) {
 		event.preventDefault();
@@ -20,7 +16,11 @@
 		const fileInput = event.target.querySelector('input[type="file"]');
 		//const eventDate = event.target.querySelector('input[type = ]')
 		const file = fileInput.files[0];
-
+    async function getDefaultImage() {
+      const response = await fetch('/event-image.jpg');
+      const data = await response.blob();
+      return new File([data], 'default-image.jpg')
+  }
 		const data = new FormData();
 		data.append('eventTitle', eventTitle);
 		data.append('eventDate', eventDate.toISOString().slice(0, 10));
@@ -72,12 +72,6 @@
 				<input type="text" name="eventTitle" placeholder="Title:" bind:value={eventTitle} />
 			</div>
 		</div>
-    <div class="row justify-content-md-center">
-      <div id="text-color" class="col col-lg-2">Description:</div>
-        <div class="col col-lg-2">
-          <textarea name="description" id="" placeholder="Description:" bind:value={eventDescription} cols="20" rows="10"></textarea>
-        </div>
-    </div>
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Event Date:</div>
 			<div class="col col-lg-2">

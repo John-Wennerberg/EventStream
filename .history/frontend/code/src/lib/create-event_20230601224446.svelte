@@ -72,12 +72,6 @@
 				<input type="text" name="eventTitle" placeholder="Title:" bind:value={eventTitle} />
 			</div>
 		</div>
-    <div class="row justify-content-md-center">
-      <div id="text-color" class="col col-lg-2">Description:</div>
-        <div class="col col-lg-2">
-          <textarea name="description" id="" placeholder="Description:" bind:value={eventDescription} cols="20" rows="10"></textarea>
-        </div>
-    </div>
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Event Date:</div>
 			<div class="col col-lg-2">

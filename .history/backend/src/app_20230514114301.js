@@ -322,7 +322,7 @@ function validateCreateEvent(eventTitle, eventDate, eventSalesDate, eventTicketL
 
   if (eventTitle < EVENT_TITLE_MIN_LENGTH) {
     errors.push('Title must contain a minimum of ' + EVENT_TITLE_MIN_LENGTH + ' characters')
-  } else if (eventTitle > EVENT_TITLE_MAX_LENGTH) {
+  } else if (eventTitle > EVENT_TITLL_MAX_LENGTH) {
     errors.push('Title can not contain more than ' + EVENT_TITLE_MAX_LENGTH + ' characters')
   }
   const today = generateFormatedDate()

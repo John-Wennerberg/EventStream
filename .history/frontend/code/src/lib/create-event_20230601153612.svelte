@@ -8,11 +8,6 @@
 	let eventDescription = '';
 	let eventOrganizer = 'HEJHEJ';
 	let eventForms = '';
-	async function getDefaultImage() {
-		const response = await fetch('/event-image.jpg');
-		const data = await response.blob();
-		return new File([data], 'default-image.jpg')
-  }
 
 	async function handleFileUpload(event) {
 		event.preventDefault();
@@ -28,24 +23,23 @@
 		data.append('eventTicketLimit', eventTicketLimit);
 		data.append('eventDescription', eventDescription);
 		data.append('eventOrganizer', eventOrganizer);
-    if(file !== undefined ){
-        data.append('eventImage', file);
+    if(file != undefined ){
+      data.append('eventImage', file);
     } else {
-		const defaultImage = await getDefaultImage();
-		data.append('eventImage', defaultImage);
+      data.append('eventImage', 'public/event-image.jpg');
     }
 
 		data.append('eventForms', eventForms);
 		try {
-			const response = await fetch('http://localhost:8080/create-event' , {
+			const response = await fetch('http://localhost:8080/create-event', {
 				method: 'POST',
 				body: data,
 			});
-      if(!response.ok){
-        throw new Error(`HTTP error! status: ${response.status}`);
-	    }
+			console.log(response);
+			console.log('Inne i den hära');
 		} catch (error) {
 			console.error(error);
+			console.log('massa errors');
 		}
 	}
 </script>
@@ -72,12 +66,6 @@
 				<input type="text" name="eventTitle" placeholder="Title:" bind:value={eventTitle} />
 			</div>
 		</div>
-    <div class="row justify-content-md-center">
-      <div id="text-color" class="col col-lg-2">Description:</div>
-        <div class="col col-lg-2">
-          <textarea name="description" id="" placeholder="Description:" bind:value={eventDescription} cols="20" rows="10"></textarea>
-        </div>
-    </div>
 		<div class="row justify-content-md-center">
 			<div id="text-color" class="col col-lg-2">Event Date:</div>
 			<div class="col col-lg-2">

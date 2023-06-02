@@ -4,7 +4,6 @@
 
 	let username = '';
 	let password = '';
-	let showMessage = false;
 
 	function validationErrors(username, password) {
     if (username.length < 2) {
@@ -44,9 +43,8 @@
 				document.querySelector("#form-container").classList.add('hide');
 
 				setTimeout(()=> {
-					showMessage = true;
 					window.location.href = "/login";
-				}, 1500);
+				}, 3000);
 			}else if(response.status === 409) {
 				const errorMessage = "Username Alredy Exists"
 				if(errorElement instanceof HTMLElement){
@@ -66,24 +64,11 @@
 		//document.querySelector('#Test').insertAdjacentHTML('beforeend', JSON.stringify(account));
 	}
 </script>
-<style>
-#successMessage {
-	visibility: hidden;
-	opacity: 0;
-	transform: scale(0.5);
-	transition: visibility 0s, opacity 0.5s linear, transform 0.5s;
-	color: green;
-	margin-top: 20px;
-	font-size: 1.5em;
-}
-#successMessage.show {
-	visibility: visible;
-	opacity: 1;
-	transform: scale(1);
-}
-
-
-</style>
+<!-- <style>
+	.hide {
+		display: none;
+	}
+</style> -->
 
 
 <div>
@@ -121,9 +106,6 @@
 				</div>
 			</div>
 		</form>
-	</div>
-	<div id="successMessage" class:show={showMessage}>
-		Account was Successfully Created! Redirecting you to Login page.
 	</div>
 	<div id="Error"></div>
 	<div id="Test" />
